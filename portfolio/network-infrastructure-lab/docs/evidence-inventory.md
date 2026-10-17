@@ -18,3 +18,11 @@
 CLIログとGW障害演習②の確認結果は verification-results.md に記録。図解SVGは ../network-diagram.svg に公開済み。
 バイナリ資料の実体はこの会話内のZIPとして整理済み。GitHub上のリンク公開済みと誤記しない。
 公開時はPTで再度開けること、機密混入のないこと、ファイルとテストIDの対応を確認する。
+
+## GitHubへの登録先（公開準備済み）
+
+- Packet Tracer本体: `portfolio/network-infrastructure-lab/assets/Network-Infrastructure-Lab-Final.pkt`
+- 証跡PNG: `portfolio/network-infrastructure-lab/assets/evidence/`
+- パッケージ説明: `portfolio/network-infrastructure-lab/docs/evidence-package-README.md`
+
+会話内でGitHub登録向けに配置パスを整えたZIPを用意。**この一覧はファイルのアップロード完了を示さない**。ZIPを展開して対応するリポジトリのフォルダへアップロード後に、ブラウザからダウンロード・画像表示を確認すること。
