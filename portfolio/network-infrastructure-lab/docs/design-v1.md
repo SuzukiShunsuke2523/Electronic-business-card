@@ -42,7 +42,7 @@
 | T06 | PC-GUEST | PC-STAFF | ICMP | 拒否 |
 | T07 | PC-GUEST | R1 VLAN30 GW | ICMP echo | 許可 |
 | T08 | PC-STAFF | R1 VLAN10 GW | ICMP echo | 許可 |
-| T09 | SERVER-WEB | PC-STAFF | 新規TCP/80接続 | 原則拒否（簡易ACL） |
+| T09（追加） | SERVER-WEB | PC-STAFF | 新規TCP/80接続 | 原則拒否（簡易ACL、環境依存） |
 | T10 | PC-GUEST | R1 VLAN10 GW | ICMP echo | 拒否 |
 
 同一VLAN内通信はルーターACLを通らないため、VLAN20内のサーバー同士の隔離は対象外。禁止対象についてはTCP/80やICMPなど個別に試験。Routerのインターフェース宛のトラフィックやACL処理順はPacket Tracer実測で確定する。
@@ -56,7 +56,7 @@
 - L2: trunk allowed VLAN 10,20,30,999、native VLAN 999、DTP停止（対応する場合）、未使用ポートshutdown。SSH管理や管理VLANは今回未設定で、本番利用に適さない。
 
 ### 受入基準
-T01〜T10の期待結果を確認し、使用機器とPacket Tracerバージョン、show出力、HTTP画面、ACLヒットカウンタ、失敗・再試験の記録を残す。通信の成功・失敗は現時点では**全件未検証**。
+必須T01〜T08・T10と、実施可能な場合の追加T09の期待結果を確認し、使用機器とPacket Tracerバージョン、show出力、HTTP画面、ACLヒットカウンタ、失敗・再試験の記録を残す。通信の成功・失敗は現時点では**全件未検証**。
 
 ## 6. 検証・切り分け計画
 
