@@ -1,0 +1,84 @@
+! Network Infrastructure Lab v1.0 — PROPOSED / NOT EXECUTED
+! Device assumption: Cisco 1941 R1 Gi0/0, 2960 SW1 Gi0/1, Fa0/1-3
+! Paste each section into the respective device, not both at once.
+!
+! ===== SW1 =====
+enable
+configure terminal
+hostname SW1
+vlan 10
+ name EMPLOYEE
+vlan 20
+ name SERVER
+vlan 30
+ name GUEST
+interface FastEthernet0/1
+ description PC-EMP
+ switchport mode access
+ switchport access vlan 10
+ spanning-tree portfast
+interface FastEthernet0/2
+ description SRV-WEB
+ switchport mode access
+ switchport access vlan 20
+ spanning-tree portfast
+interface FastEthernet0/3
+ description PC-GUEST
+ switchport mode access
+ switchport access vlan 30
+ spanning-tree portfast
+interface GigabitEthernet0/1
+ description TO-R1
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20,30
+ no shutdown
+end
+!
+! ===== R1 =====
+enable
+configure terminal
+hostname R1
+interface GigabitEthernet0/0
+ description TO-SW1
+ no ip address
+ no shutdown
+interface GigabitEthernet0/0.10
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.0
+ ip access-group EMP-IN in
+interface GigabitEthernet0/0.20
+ encapsulation dot1Q 20
+ ip address 192.168.20.1 255.255.255.0
+ ip access-group SERVER-IN in
+interface GigabitEthernet0/0.30
+ encapsulation dot1Q 30
+ ip address 192.168.30.1 255.255.255.0
+ ip access-group GUEST-IN in
+ip access-list extended EMP-IN
+ remark Allow employee to local gateway by ICMP
+ permit icmp host 192.168.10.10 host 192.168.10.1 echo
+ remark Allow employee HTTP to business server
+ permit tcp host 192.168.10.10 host 192.168.20.10 eq 80
+ deny ip any any
+ip access-list extended SERVER-IN
+ remark Allow established HTTP server response to employee
+ permit tcp host 192.168.20.10 eq 80 host 192.168.10.10 established
+ deny ip any any
+ip access-list extended GUEST-IN
+ remark Allow guest to local gateway only
+ permit icmp host 192.168.30.10 host 192.168.30.1 echo
+ deny ip any any
+end
+!
+! Verification commands (run in privileged EXEC)
+! SW1: show vlan brief
+! SW1: show interfaces trunk
+! SW1: show interfaces status
+! R1 : show ip interface brief
+! R1 : show ip route
+! R1 : show access-lists
+! R1 : show running-config
+!
+! NOTE: Packet Tracer IOS support / TCP established behavior is unverified.
+! NOTE: If the switch port differs, adjust ONLY after reviewing physical model.
+! NOTE: This is a scoped demo; not a secure production configuration.
