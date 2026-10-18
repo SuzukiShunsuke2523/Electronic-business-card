@@ -1,18 +1,22 @@
-# 電子名刺 Webサイト
+# 鈴木 駿介 — 電子名刺 Webサイト
 
-交流会で使う、スマートフォン向けの電子名刺です。
+[電子名刺](https://electronic-business-card.pages.dev/)と自主制作・活動実績を公開する静的HTMLサイトです。
 
-## 現在の状態
-- 初期版 v0.1、レビュー前です。
-- 顔写真とInstagram URLは未登録です。
-- 技術ブログは準備中です。
-- 個人LINEのID・QR・追加URLは公開しません（対面のみ）。
+## Network Infrastructure Lab
 
-## 公開構成（推奨）
-Cloudflare Pages FreeでGitHubのmainブランチを接続して公開します。Framework preset: None / Build command: 空欄 / Output directory: /（またはサービス画面に従ってルートを指定）。
+架空の小規模オフィスを題材に、Cisco Packet Tracer 9.0.1でVLAN / Router-on-a-Stick / ACLを構築した学習ポートフォリオです。作者による基本通信9件・障害演習3件の実施要約と画像を掲載しています。実機試験・第三者の独立再実行は未実施です。
 
-## 更新方法
-index.htmlの文章やスタイルを変更してmainへ反映すると、Cloudflare PagesのGit連携後は自動デプロイされます。
+- [公開ページ](https://electronic-business-card.pages.dev/portfolio/network-infrastructure-lab/)
+- [現行設計](portfolio/network-infrastructure-lab/docs/design-v1.md)
+- [参照CLI・再現手順](portfolio/network-infrastructure-lab/docs/packet-tracer-v1.md)（最終running-configの抽出物ではありません）
+- [実測要約・証跡対応表](portfolio/network-infrastructure-lab/docs/verification-results.md)
+- [構築ファイル](portfolio/network-infrastructure-lab/assets/Network-Infrastructure-Lab-Final.pkt) / [画像](portfolio/network-infrastructure-lab/assets/evidence/)
+- [品質レビュー](portfolio/network-infrastructure-lab/docs/quality-review-2026-10-18.md)
 
-## 確認事項
-公開前に本人の写真、Instagram URL、氏名・実績の公開内容を確認してください。GitHubのリポジトリは公開設定です。仕事先の内部情報や個人LINEはコミットしないでください。
+Lab直下のDESIGN.mdとproposed-cli.txtは旧案です。現行構築にはdocs配下を参照してください。
+
+## 公開・更新
+
+Cloudflare Pagesでmainを公開。静的サイトのためビルド処理は不要です。変更は作業ブランチとPull Requestで確認してからmainへ反映します。
+
+顔写真とInstagramリンクはトップページに掲載済み。個人LINEのID・QR・追加URLは公開しません。勤務先や顧客の内部情報はコミットしないでください。

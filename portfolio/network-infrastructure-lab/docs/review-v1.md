@@ -1,3 +1,5 @@
+> **履歴資料：構築前の静的レビューです。** 以下の「未実施」は2026-10-17のレビュー時点を指します。現在の実測要約は [verification-results.md](verification-results.md)、今回の品質レビューは [quality-review-2026-10-18.md](quality-review-2026-10-18.md) を参照してください。
+
 # 設計レビュー記録 v1.1 — 2026-10-17
 
 ## 判定

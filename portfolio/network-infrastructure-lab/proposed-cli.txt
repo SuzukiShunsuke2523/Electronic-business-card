@@ -1,3 +1,9 @@
+! ARCHIVED INITIAL PROPOSAL - DO NOT USE FOR THE CURRENT LAB
+! Current reference: docs/packet-tracer-v1.md
+! This historical 1941/3-endpoint/EMP-IN configuration differs from
+! the current 2911/4-endpoint/FROM_STAFF lab, including ICMP policy.
+! Preserved below as history; not the final .pkt running-config.
+!
 ! Network Infrastructure Lab v1.0 — PROPOSED / NOT EXECUTED
 ! Device assumption: Cisco 1941 R1 Gi0/0, 2960 SW1 Gi0/1, Fa0/1-3
 ! Paste each section into the respective device, not both at once.
