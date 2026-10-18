@@ -1,22 +1,34 @@
-# 鈴木 駿介 — 電子名刺 Webサイト
+# 鈴木 駿介 | 電子名刺 Webサイト
 
-[電子名刺](https://electronic-business-card.pages.dev/)と自主制作・活動実績を公開する静的HTMLサイトです。
+交流会などで出会った方に、ITインフラの技術力と、企画を周囲と協力して実現する姿勢を伝える個人の電子名刺です。
 
-## Network Infrastructure Lab
+## 公開URL
+- [電子名刺トップ](https://electronic-business-card.pages.dev/)
+- [Network Infrastructure Lab](https://electronic-business-card.pages.dev/portfolio/network-infrastructure-lab/)
+- [eスポーツ大会の企画・統括](https://electronic-business-card.pages.dev/projects/esports-tournament/)
 
-架空の小規模オフィスを題材に、Cisco Packet Tracer 9.0.1でVLAN / Router-on-a-Stick / ACLを構築した学習ポートフォリオです。作者による基本通信9件・障害演習3件の実施要約と画像を掲載しています。実機試験・第三者の独立再実行は未実施です。
+## 現在の状態（2026-10-18）
+- Cloudflare Pages の公開サイトと GitHub main を連携して運用しています。
+- 自己紹介、顔写真、Instagram へのリンクを掲載しています。
+- **企画実績**：2024年、日本電子専門学校スポーツフェスティバルのeスポーツ大会を学生側で統括。参加者30名弱、運営約8名は本人の記憶に基づく概数です。
+- **技術実績**：独立設計のPacket Tracerラボの .pkt ファイル、検証画像10枚、必須試験9件・障害演習3件の記録を公開しています。これは**Cisco Packet Tracer上の利用者実測**であり、実機試験・第三者の独立再実行は未実施です。
+- 一部の設計書とCLIは**作成当時の旧案**です。現行の結果は[実測記録](portfolio/network-infrastructure-lab/docs/verification-results.md)、詳細設計は[design-v1.md](portfolio/network-infrastructure-lab/docs/design-v1.md)をご確認ください。
 
-- [公開ページ](https://electronic-business-card.pages.dev/portfolio/network-infrastructure-lab/)
-- [現行設計](portfolio/network-infrastructure-lab/docs/design-v1.md)
+## 主なディレクトリ
+- `index.html`：電子名刺トップ
+- `projects/esports-tournament/index.html`：企画・実行のケーススタディ
+- `portfolio/network-infrastructure-lab/index.html`：ネットワーク技術のポートフォリオ
+- `portfolio/network-infrastructure-lab/docs/`：技術設計、検証手順、実測記録
+- `portfolio/network-infrastructure-lab/assets/`：Packet Tracer構築ファイルと検証画像
+- `assets/`：favicon とSNS共有用画像
+
+## 運用・公開ポリシー
+- 静的HTML/CSSで構成。GitHub main にマージすると、Cloudflare PagesのGit連携設定に従い自動デプロイされます。
+- 公開前に勤務先・顧客の内部資料、機密情報、第三者の写真・著作権について点検してください。
+- **個人LINEのID・追加URL・QRコードは公開しません**。LINEは対面のみで交換する方針です。
+- 変更は改善用ブランチ → Pull Request → 内容・表示検証 → main マージの順に進めます。
+
+## Labの参照資料
+
 - [参照CLI・再現手順](portfolio/network-infrastructure-lab/docs/packet-tracer-v1.md)（最終running-configの抽出物ではありません）
-- [実測要約・証跡対応表](portfolio/network-infrastructure-lab/docs/verification-results.md)
-- [構築ファイル](portfolio/network-infrastructure-lab/assets/Network-Infrastructure-Lab-Final.pkt) / [画像](portfolio/network-infrastructure-lab/assets/evidence/)
 - [品質レビュー](portfolio/network-infrastructure-lab/docs/quality-review-2026-10-18.md)
-
-Lab直下のDESIGN.mdとproposed-cli.txtは旧案です。現行構築にはdocs配下を参照してください。
-
-## 公開・更新
-
-Cloudflare Pagesでmainを公開。静的サイトのためビルド処理は不要です。変更は作業ブランチとPull Requestで確認してからmainへ反映します。
-
-顔写真とInstagramリンクはトップページに掲載済み。個人LINEのID・QR・追加URLは公開しません。勤務先や顧客の内部情報はコミットしないでください。

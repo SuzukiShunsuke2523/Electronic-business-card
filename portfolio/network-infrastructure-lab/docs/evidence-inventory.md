@@ -29,4 +29,4 @@ CLI確認結果とGW障害演習②は verification-results.md に要約を記�
 
 ## 2026-10-18 最終登録確認
 
-GitHub main の `assets/Network-Infrastructure-Lab-Final.pkt`（78,787 bytes）と `assets/evidence/` のPNG10枚をAPIで存在確認。`docs/evidence-package-README.md`および専用ページHTML内の構築ファイル・画像リンクも確認。Cloudflare Pages上でのダウンロード・画像表示の実操作確認は別途必要。
+GitHub main の `assets/Network-Infrastructure-Lab-Final.pkt`（78,787 bytes）と `assets/evidence/` のPNG10枚をAPIで存在確認。`docs/evidence-package-README.md`および専用ページHTML内の構築ファイル・画像リンクも確認。Cloudflare Pagesでの.pktダウンロード成功・画像10枚の表示と拡大は2026-10-18に本人が確認済みと報告。今回の改修では本番ブラウザによる再検証は未実施。
