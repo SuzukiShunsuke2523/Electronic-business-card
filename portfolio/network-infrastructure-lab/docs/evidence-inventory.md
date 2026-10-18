@@ -25,3 +25,8 @@ CLIログとGW障害演習②の確認結果は verification-results.md に記�
 - [検証画像一覧](../assets/evidence/)
 - [ファイルのSHA-256一覧](evidence-package-README.md)
 - [公開ページ](https://electronic-business-card.pages.dev/portfolio/network-infrastructure-lab/#verification-images)
+
+
+## 2026-10-18 最終登録確認
+
+GitHub main の `assets/Network-Infrastructure-Lab-Final.pkt`（78,787 bytes）と `assets/evidence/` のPNG10枚をAPIで存在確認。`docs/evidence-package-README.md`および専用ページHTML内の構築ファイル・画像リンクも確認。Cloudflare Pages上でのダウンロード・画像表示の実操作確認は別途必要。
