@@ -1,4 +1,6 @@
-# Network Infrastructure Lab — 要件定義・基本設計 v1.0
+# Network Infrastructure Lab — 初期の要件定義・基本設計案（履歴）
+
+> **重要：2026-10-17の旧草稿です。文中の未検証表記やT01〜T11という試験番号は当時のもので、現行のT01〜T08・T10と異なります。現行の構築・実測の参照先ではありません。** [現行の詳細設計](docs/design-v1.md)・[実測記録](docs/verification-results.md)・[最終.pkt](assets/Network-Infrastructure-Lab-Final.pkt)を確認してください。
 更新日: 2026-10-17 / 状態: 設計案・Packet Tracer未検証
 
 ## 目的と境界
