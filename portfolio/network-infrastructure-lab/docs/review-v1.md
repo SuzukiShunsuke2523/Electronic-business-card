@@ -1,6 +1,6 @@
-# 設計レビュー記録 v1.1 — 2026-10-17
+> **履歴資料：構築前の静的レビューです。** 以下の「未実施」は2026-10-17のレビュー時点を指します。現在の実測要約は [verification-results.md](verification-results.md)、今回の品質レビューは [quality-review-2026-10-18.md](quality-review-2026-10-18.md) を参照してください。
 
-> **履歴資料**：以下の「Packet Tracer未実施」は当時の記録であり現在の状態ではありません。後に利用者が基本試験9件と障害演習3件を実測しました。最新の[実測記録](verification-results.md)と[最終.pkt](../assets/Network-Infrastructure-Lab-Final.pkt)を参照してください。
+# 設計レビュー記録 v1.1 — 2026-10-17
 
 ## 判定
 
