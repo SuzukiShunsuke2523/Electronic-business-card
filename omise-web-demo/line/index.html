@@ -1,7 +1,5 @@
 <!DOCTYPE html>
 
-<!DOCTYPE html>
-
 <html lang="ja">
 <head>
 <meta charset="utf-8"/>
@@ -102,7 +100,7 @@
 <div class="line-next-steps"><strong>実際のサイトなら…</strong><p>「LINEで相談する」ボタン → お店の公式LINEで友だち追加 → お客さまがトーク送信 → お店が返信、という流れです。</p><p>※友だち追加だけで相談文や予約は自動送信されません。</p></div>
 <button class="btn btn-primary line-modal-close" id="cancelContact" type="button">デモを閉じる</button>
 </div></dialog>
-<script>(() => {
+<script>document.addEventListener("DOMContentLoaded", () => {
  const menu=document.getElementById('menuButton');
  const nav=document.getElementById('siteNav');
  if(menu&&nav){
@@ -117,5 +115,5 @@
  document.getElementById('closeContact').addEventListener('click',close);
  document.getElementById('cancelContact').addEventListener('click',close);
  dlg.addEventListener('click',(e)=>{if(e.target===dlg)close();});
-})();</script>
+});</script>
 <button class="line-fixed-button" id="lineFixed" type="button"><span aria-hidden="true" class="line-chat-icon">LINE</span> 公式LINEで相談（デモ）</button><!-- Demo QA v1.0: client-owned LINE/Google Form URL required before any real publication. --></body></html>
