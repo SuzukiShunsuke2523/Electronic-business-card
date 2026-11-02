@@ -32,6 +32,7 @@
 /* official LINE enquiry variant (local simulation, no link) */
 .line-primary{background:#06c755!important;color:#082a19!important;font-weight:800;box-shadow:0 10px 28px #0002;padding:17px 23px}
 .line-primary:hover{background:#10e160!important;color:#082a19!important}
+.line-primary{max-width:100%;white-space:normal;overflow-wrap:anywhere}
 .line-chat-icon{display:inline-grid;place-items:center;background:white;border-radius:7px;padding:3px 5px;font-size:10px;line-height:1;font-weight:900;color:#08b544}
 .cta-lead{max-width:680px;margin:16px auto 24px;color:#dcece1!important}
 .line-flow{max-width:810px;margin:27px auto 32px;display:grid;grid-template-columns:repeat(3,1fr);gap:11px;text-align:left}
@@ -105,7 +106,7 @@
  const nav=document.getElementById('siteNav');
  if(menu&&nav){
   menu.addEventListener('click',()=>{const open=nav.classList.toggle('open');menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'メニューを閉じる':'メニューを開く');menu.textContent=open?'×':'☰';});
-  nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');menu.textContent='☰';menu.setAttribute('aria-expanded','false');}));
+  nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');menu.textContent='☰';menu.setAttribute('aria-expanded','false');menu.setAttribute('aria-label','メニューを開く');}));
  }
  const dlg=document.getElementById('contactModal');
  const open=()=>dlg.showModal();
