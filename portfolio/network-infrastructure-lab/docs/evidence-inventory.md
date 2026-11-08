@@ -16,7 +16,7 @@
 | failure3_http_restored.png | ACL復旧後HTTP表示 | 登録済み |
 | network-layout-cropped.png | トポロジー画面（PCのパス表示を切り落としたもの） | 登録済み |
 
-CLIログとGW障害演習②の確認結果は verification-results.md に記録。図解SVGは ../network-diagram.svg に公開済み。
+CLI確認結果とGW障害演習②は verification-results.md に要約を記録。show出力の原文や障害②の専用画像は未掲載。図解SVGは ../network-diagram.svg に公開済み。
 構築ファイルと検証画像10枚を以下に配置。Packet Tracerでの別環境再実行は未実施。
 
 ## 公開先

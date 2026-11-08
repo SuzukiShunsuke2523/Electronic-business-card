@@ -27,3 +27,8 @@
 - 公開前に勤務先・顧客の内部資料、機密情報、第三者の写真・著作権について点検してください。
 - **個人LINEのID・追加URL・QRコードは公開しません**。LINEは対面のみで交換する方針です。
 - 変更は改善用ブランチ → Pull Request → 内容・表示検証 → main マージの順に進めます。
+
+## Labの参照資料
+
+- [参照CLI・再現手順](portfolio/network-infrastructure-lab/docs/packet-tracer-v1.md)（最終running-configの抽出物ではありません）
+- [品質レビュー](portfolio/network-infrastructure-lab/docs/quality-review-2026-10-18.md)

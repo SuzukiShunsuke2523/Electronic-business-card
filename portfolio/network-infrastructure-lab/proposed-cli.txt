@@ -1,8 +1,8 @@
-! [LEGACY / HISTORICAL PROPOSAL] 2026-10-17: NOT VERIFIED FINAL RUNNING-CONFIG
-! This draft differs from later design, ACL, hardware assumptions and test IDs.
-! Current: docs/design-v1.md | docs/verification-results.md
-! Final lab: assets/Network-Infrastructure-Lab-Final.pkt
-! Do not use this old proposal to reproduce 9/9 test results.
+! ARCHIVED INITIAL PROPOSAL - DO NOT USE FOR THE CURRENT LAB
+! Current reference: docs/packet-tracer-v1.md
+! This historical 1941/3-endpoint/EMP-IN configuration differs from
+! the current 2911/4-endpoint/FROM_STAFF lab, including ICMP policy.
+! Preserved below as history; not the final .pkt running-config.
 !
 ! Network Infrastructure Lab v1.0 — PROPOSED / NOT EXECUTED
 ! Device assumption: Cisco 1941 R1 Gi0/0, 2960 SW1 Gi0/1, Fa0/1-3
