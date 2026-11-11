@@ -1,0 +1,38 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LUNOA v4 Media QA</title><style>body{font:14px system-ui;background:#ecf2ec;color:#183b28;margin:0;padding:24px}h1{font-size:23px}#status{background:white;padding:14px;border-radius:9px;font-weight:bold}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin-top:20px}.card{padding:14px;background:white;border:1px solid #bfd0c2;border-radius:9px}.pass{color:#127745}.fail{color:#b23324}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px}.hidden{position:absolute;left:-10000px;top:0;pointer-events:none}</style></head><body><h1>LUNOA v4｜実写画像・レスポンシブQA</h1><p>320 / 390 / 768 / 1280 pxのページを実際のiframeに読み込み、写真ファイルの表示・動画要素・料金操作・横幅を検証します。</p><div id="status">検証中…</div><div class="grid" id="results"></div><div class="hidden" id="frames"></div><script>
+(async()=>{
+const widths=[320,390,768,1280],all=[],frames=document.getElementById('frames'),target=document.getElementById('results'),summary=document.getElementById('status'),sleep=ms=>new Promise(r=>setTimeout(r,ms));
+async function once(width){
+ const f=document.createElement('iframe');f.width=width;f.height=780;f.style.width=width+'px';f.style.height='780px';f.title='QA '+width;
+ const loaded=new Promise((resolve,reject)=>{f.onload=resolve;f.onerror=()=>reject(new Error('load fail'))});f.src='./index.html?qa=1';frames.append(f);await loaded;
+ const w=f.contentWindow,d=w.document;
+ for(let i=0;i<100&&!(d.documentElement.dataset.ready==='true'&&d.documentElement.dataset.mediaReady==='true');i++)await sleep(100);
+ const checks={},details={};
+ checks.jsReady=d.documentElement.dataset.ready==='true'&&d.documentElement.dataset.mediaReady==='true';
+ checks.viewport=w.innerWidth===width;
+ checks.noHorizontalScroll=d.documentElement.scrollWidth<=width+2;
+ const selectors=['.hero h1','.hero-art','.concept-figure','.story-visual','.gallery-grid','.plan-grid','.selected-band','.motion-stage','.steps-layout','.faq-grid'];
+ const overflow=[];
+ for(const s of selectors){let e=d.querySelector(s);if(!e){overflow.push(s+' missing');continue}let b=e.getBoundingClientRect();if(b.left<-4||b.right>width+4)overflow.push(s+': '+b.left.toFixed(1)+'–'+b.right.toFixed(1));}
+ checks.contentFits=overflow.length===0;details.overflow=overflow;
+ const imgs=[...d.querySelectorAll('img')];imgs.forEach(img=>img.loading='eager');
+ const imageStates=await Promise.all(imgs.map(async (im)=>{
+  try{await Promise.race([im.decode(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),18000))]);}catch(e){}
+  return {src:im.currentSrc.split('?')[0].split('/').slice(-2).join('/'),ok:im.complete&&im.naturalWidth>0,naturalWidth:im.naturalWidth};
+ }));
+ checks.allPhotosLoad=imageStates.length===4&&imageStates.every(x=>x.ok);details.images=imageStates;
+ const video=d.getElementById('heroVideo');checks.videoSource=!!video&&video.querySelector('source')?.src.includes('videos.pexels.com/video-files/6377752/');
+ checks.videoControls=!!d.getElementById('videoToggle');
+ d.querySelector('[data-plan="ticket"]')?.click();checks.price26k=d.getElementById('accessiblePrice')?.textContent.includes('26,000');
+ d.querySelector('[data-mode="type"]')?.click();checks.typing=d.getElementById('motionOutput')?.classList.contains('mode-type');
+ d.querySelector('[data-step="1"]')?.click();checks.step02=d.getElementById('stepCounter')?.textContent.includes('02 / 03');
+ const faq=d.querySelector('details');faq?.querySelector('summary')?.click();checks.faq=faq?.open;
+ checks.noRealForm=d.querySelectorAll('form').length===0;
+ const passed=Object.values(checks).every(Boolean);
+ f.remove();
+ return {width,passed,checks,details};
+}
+for(const width of widths){try{all.push(await once(width))}catch(e){all.push({width,passed:false,error:String(e)})}}
+for(const entry of all){let box=document.createElement('section');box.className='card';let h=document.createElement('h2');h.textContent=entry.width+' px — '+(entry.passed?'PASS':'FAIL');h.className=entry.passed?'pass':'fail';let pre=document.createElement('pre');pre.textContent=JSON.stringify(entry,null,2);box.append(h,pre);target.append(box)}
+const passed=all.every(x=>x.passed);summary.textContent=passed?'PASS — 4画面幅の画像・操作チェックはすべて合格':'FAIL — 問題を確認してください';summary.className=passed?'pass':'fail';document.documentElement.dataset.qaComplete='true';window.LUNOA_MEDIA_QA=all;
+})();
+</script></body></html>
