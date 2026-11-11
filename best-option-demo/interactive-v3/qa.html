@@ -1,0 +1,57 @@
+<!doctype html><html lang="ja"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>LUNOA v3｜Viewport & Interaction QA (internal)</title>
+<style>body{font-family:system-ui,sans-serif;padding:22px;margin:0;background:#ebefe8;color:#203729}h1{font-size:23px}p{font-size:13px}#status{padding:14px;background:#fff;border-radius:8px;font-weight:700}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:15px}.cell{padding:15px;background:#fff;border:1px solid #cfdacd;border-radius:8px}.ok{color:#17744b}.bad{color:#ac321e}code,pre{font-size:11px;white-space:pre-wrap;word-wrap:break-word}.frames{position:absolute;left:-20000px;top:0;display:flex;gap:10px;pointer-events:none}</style>
+</head><body><h1>LUNOA v3｜実画面幅・操作 自動検証</h1><p>このページは公開デモと同じ環境で、各幅のiframeから操作と横はみ出しを測定する内部QA専用です。</p><div id="status">検証を実行中…</div><div class="grid" id="results"></div><div class="frames" id="frames"></div>
+<script>
+(async()=>{
+ const widths=[320,390,768,1280],frames=document.getElementById("frames"),status=document.getElementById("status"),results=document.getElementById("results");
+ const delay=ms=>new Promise(r=>setTimeout(r,ms));
+ const run=async width=>{
+  const frame=document.createElement("iframe");frame.setAttribute("title",width+"px QA frame");
+  frame.width=width;frame.height=800;frame.style.width=width+"px";frame.style.height="800px";
+  const load=new Promise((resolve,reject)=>{frame.onload=resolve;frame.onerror=()=>reject(new Error("iframe load failed"))});
+  frames.appendChild(frame);frame.src="./";await load;await delay(180);
+  const win=frame.contentWindow,doc=win.document,$=sel=>doc.querySelector(sel);
+  const errors=[],checks={};
+  win.addEventListener("error",e=>errors.push(e.message||String(e)));
+  const check=(key,result)=>checks[key]=Boolean(result);
+  check("ready",doc.documentElement.dataset.ready==="true");
+  check("width",win.innerWidth===width);
+  check("noHorizontalScroll",doc.documentElement.scrollWidth<=win.innerWidth+2);
+  const boxes=[".site-header",".brand",".head-cta",".hero h1",".concept-content",".plan-grid",".selected-band",".motion-stage",".steps-layout",".faq-list"];
+  const overflow=[];
+  for(const sel of boxes){
+    const el=$(sel);if(!el){overflow.push(sel+" missing");continue}
+    const r=el.getBoundingClientRect();
+    if(r.left< -3||r.right>width+3||el.scrollWidth>el.clientWidth+4)overflow.push(sel+" left:"+r.left.toFixed(1)+" right:"+r.right.toFixed(1)+" scroll:"+el.scrollWidth+" client:"+el.clientWidth);
+  }
+  check("contentFitsViewport",overflow.length===0);
+  // Stateful controls should update at every width without requiring a mouse.
+  $('[data-plan="ticket"]').click();
+  check("ticketSelection",$("#accessiblePrice").textContent.includes("26,000")&&$('[data-plan="ticket"]').getAttribute("aria-pressed")==="true");
+  $('[data-plan="single"]').click();
+  check("singleSelection",$("#accessiblePrice").textContent.includes("7,000")&&$('[data-plan="single"]').getAttribute("aria-pressed")==="true");
+  $('[data-mode="type"]').click();check("typing",$("#motionOutput").classList.contains("mode-type"));
+  $('[data-mode="gradient"]').click();check("gradient",$("#motionOutput").classList.contains("mode-gradient"));
+  $("#replayMotion").click();check("replay",$("#motionOutput").classList.contains("mode-gradient"));
+  $('[data-step="1"]').click();check("step2",$("#stepCounter").textContent.includes("02 / 03")&&$("#stepTitle").textContent==="希望日時を相談");
+  $("#openGuide").click();check("dialogOpens",$("#guideDialog").open&&$("#dialogPlan").textContent.includes("7,000"));
+  $("#guideDialog [data-close]").click();check("dialogCloses",!$("#guideDialog").open);
+  const faq=$(".faq-list details");faq.querySelector("summary").click();check("faqOpens",faq.open);
+  await delay(700);check("animatedPriceCompletes",$("#animatedPrice").textContent==="7,000");
+  check("noRuntimeErrors",errors.length===0);
+  const passed=Object.values(checks).every(Boolean);
+  return {width,passed,checks,overflow,errors,scrollWidth:doc.documentElement.scrollWidth,clientWidth:win.innerWidth};
+ };
+ const data=[];
+ for(const width of widths){
+  try{data.push(await run(width))}catch(e){data.push({width,passed:false,error:String(e)})}
+ }
+ const allPass=data.every(x=>x.passed);
+ status.innerHTML=allPass?"<span class='ok'>PASS｜4画面幅、主要操作、横はみ出しを検証しました</span>":"<span class='bad'>要確認｜問題が検出されました</span>";
+ data.forEach(x=>{const div=document.createElement("div");div.className="cell";const heading=document.createElement("h2");heading.textContent=x.width+"px｜"+(x.passed?"PASS":"FAIL");heading.className=x.passed?"ok":"bad";div.appendChild(heading);const details=document.createElement("pre");details.textContent=JSON.stringify(x,null,2);div.appendChild(details);results.appendChild(div)});
+ document.documentElement.dataset.qaComplete="true";
+ window.LUNOA_V3_QA_RESULTS=data;
+})();
+</script></body></html>
