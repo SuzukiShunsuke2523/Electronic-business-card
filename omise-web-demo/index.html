@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#213d33">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="おみせのWeb係の制作サンプル。架空ピラティススタジオのフォーム版と公式LINE版を比較できます。">
+  <title>Web制作サンプルを比較｜おみせのWeb係</title>
+  <style>
+    :root{--ink:#254035;--muted:#65766c;--cream:#f6f4ed;--line:#e6e9df;--jade:#31594a;--green:#06c755;--gold:#bc9776}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Noto Sans JP",Meiryo,sans-serif;-webkit-font-smoothing:antialiased}
+    a{color:inherit}.shell{max-width:1070px;margin:0 auto;padding:0 25px}.top{border-bottom:1px solid #dce3db}.top .shell{display:flex;justify-content:space-between;gap:12px;align-items:center;padding-top:22px;padding-bottom:22px}.brand{font-size:15px;font-weight:800;letter-spacing:.08em}.top-note{font-size:11px;color:var(--muted)}
+    .hero{padding:80px 0 48px;text-align:center}.eyebrow{font-size:12px;color:#8c775c;letter-spacing:.2em;font-weight:800}.hero h1{font-family:Georgia,"Yu Mincho","Hiragino Mincho ProN",serif;font-weight:600;font-size:clamp(30px,5vw,55px);letter-spacing:.04em;line-height:1.5;margin:17px auto 20px}.hero p{font-size:15px;line-height:2;color:var(--muted);max-width:660px;margin:0 auto}.choice-wrap{padding-bottom:62px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}.choice{display:flex;flex-direction:column;background:#fff;border:1px solid #e1e7dc;border-radius:26px;overflow:hidden;text-decoration:none;box-shadow:0 15px 50px rgba(32,60,44,.07);transition:transform .2s ease,box-shadow .2s ease}.choice:hover{transform:translateY(-6px);box-shadow:0 20px 65px rgba(32,60,44,.13)}.choice:focus-visible{outline:4px solid #a3d3b4;outline-offset:5px}
+    .art{height:203px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;background:#e9eee6}.art svg{max-width:300px;width:84%;height:175px}.line-art{background:#e5f5e9}
+    .choice-content{padding:29px 29px 31px;display:flex;flex:1;flex-direction:column}.count{font:italic 14px Georgia,serif;color:#a08b73}.choice h2{font-size:25px;letter-spacing:.015em;margin:10px 0 10px}.choice p{font-size:13px;line-height:1.9;color:#617166;margin:0 0 23px;flex:1}.cta{display:flex;align-items:center;justify-content:center;gap:8px;min-height:51px;font-weight:800;font-size:14px;border-radius:999px;background:var(--jade);color:white}.choice.line .cta{background:#049e43}.cta span{font-size:21px;line-height:1}
+    .note{font-size:12px;line-height:1.9;color:#6c7d71;text-align:center;margin:25px 0 0}.info{background:#e9eee5;padding:34px 0;text-align:center}.info h3{font-size:16px;margin:0 0 10px}.info p{font-size:13px;color:#536c5d;line-height:1.9;margin:0}.footer{padding:28px 0 38px;text-align:center;color:#7b897e;font-size:11px}
+    @media(max-width:700px){.shell{padding:0 17px}.hero{padding:57px 0 31px}.hero p{font-size:13px}.grid{grid-template-columns:1fr;gap:17px}.art{height:164px}.art svg{height:144px}.choice-content{padding:22px}.choice h2{font-size:22px}.choice-wrap{padding-bottom:38px}.top .shell{padding-top:19px;padding-bottom:19px}.top-note{max-width:120px;text-align:right}}
+    @media(prefers-reduced-motion:reduce){.choice{transition:none}.choice:hover{transform:none}}
+  </style>
+</head>
+<body>
+<header class="top"><div class="shell"><span class="brand">おみせのWeb係</span><span class="top-note">1ページWebサイト制作サービス｜デモ</span></div></header>
+<main>
+<section class="hero shell">
+  <div class="eyebrow">WEBSITE DEMONSTRATION</div>
+  <h1>お問い合わせ方法を、<br>2つのスタイルで比較。</h1>
+  <p>同じ架空のピラティススタジオを、フォーム版と公式LINE版の2通りでご用意しました。<br>気になる方を選んで、サイトの雰囲気を体験してください。</p>
+</section>
+<section class="choice-wrap shell" aria-label="デモサイトの種類を選択">
+<div class="grid">
+  <a class="choice" href="./form/" aria-label="① フォーム版のデモサイトを見る">
+    <div class="art" aria-hidden="true"><svg viewBox="0 0 300 175" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="58" y="10" width="183" height="157" rx="13" fill="#FFF" stroke="#D2DDD1" stroke-width="2"/><rect x="72" y="27" width="90" height="8" rx="4" fill="#D4DDD4"/><rect x="72" y="48" width="150" height="22" rx="6" fill="#F3F5F1" stroke="#E1E9E0"/><rect x="82" y="56" width="85" height="5" rx="2.5" fill="#B0C4B6"/><rect x="72" y="80" width="150" height="22" rx="6" fill="#F3F5F1" stroke="#E1E9E0"/><rect x="82" y="88" width="120" height="5" rx="2.5" fill="#B0C4B6"/><rect x="72" y="112" width="150" height="32" rx="16" fill="#31594A"/><path d="M134 128l10 9 19-20" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="choice-content"><span class="count">01 / FORM</span><h2>① フォーム版</h2><p>お名前や相談内容を入力するスタイル。項目が決まっているため、お店側も情報を整理して受け取れます。</p><span class="cta">フォーム版を見る <span aria-hidden="true">↗</span></span></div>
+  </a>
+  <a class="choice line" href="./line/" aria-label="② 公式LINE版のデモサイトを見る">
+    <div class="art line-art" aria-hidden="true"><svg viewBox="0 0 300 175" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="81" y="7" width="138" height="160" rx="22" fill="#FFF" stroke="#B9D8C1" stroke-width="3"/><rect x="95" y="24" width="110" height="15" rx="7" fill="#EBF8EE"/><path d="M103 32h96" stroke="#0DA54B" stroke-width="2"/><rect x="95" y="53" width="97" height="33" rx="14" fill="#E7ECE7"/><rect x="110" y="66" width="66" height="5" rx="2.5" fill="#A9BCAC"/><rect x="117" y="97" width="90" height="35" rx="15" fill="#9CEDBA"/><rect x="128" y="112" width="69" height="5" rx="2.5" fill="#4F8763"/><circle cx="150" cy="151" r="5" fill="#C5E3CD"/></svg></div>
+    <div class="choice-content"><span class="count">02 / LINE</span><h2>② 公式LINE版</h2><p>LINEで気軽に相談するスタイル。友だち追加からトークで質問・日程調整につなぐ導線をイメージできます。</p><span class="cta">公式LINE版を見る <span aria-hidden="true">↗</span></span></div>
+  </a>
+</div>
+<p class="note">※NAGI PILATESは架空の店舗です。どちらも体験用のデモで、入力データの送信・保存や本物のLINEへの接続はありません。</p>
+</section>
+<section class="info"><div class="shell"><h3>どちらも、1ページ制作のご提案例です。</h3><p>スマートフォン対応・料金案内・サービス紹介・よくある質問・お問い合わせ導線などを掲載。<br>実際のお店では、希望する問い合わせ方法を1種類選んで設定します。</p></div></section>
+</main><footer class="footer shell">© 2026 おみせのWeb係  /  サービス企画・デモ展示</footer>
+</body>
+</html>
