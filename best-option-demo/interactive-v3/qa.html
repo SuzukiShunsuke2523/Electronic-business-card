@@ -11,7 +11,7 @@
   const frame=document.createElement("iframe");frame.setAttribute("title",width+"px QA frame");
   frame.width=width;frame.height=800;frame.style.width=width+"px";frame.style.height="800px";
   const load=new Promise((resolve,reject)=>{frame.onload=resolve;frame.onerror=()=>reject(new Error("iframe load failed"))});
-  frames.appendChild(frame);frame.src="./";await load;await delay(180);
+  frame.src="./";frames.appendChild(frame);await load;for(let k=0;k<100;k++){if(frame.contentWindow?.document?.documentElement?.dataset?.ready==="true")break;await delay(100)};await delay(100);
   const win=frame.contentWindow,doc=win.document,$=sel=>doc.querySelector(sel);
   const errors=[],checks={};
   win.addEventListener("error",e=>errors.push(e.message||String(e)));
