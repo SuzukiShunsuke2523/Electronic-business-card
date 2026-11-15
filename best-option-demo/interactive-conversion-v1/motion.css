@@ -146,3 +146,18 @@
  .motion-rebuild .hero-clip>span,.motion-rebuild .hero-label,.motion-rebuild .hero-description,.motion-rebuild .hero-cta-row,.motion-rebuild .hero-price{animation:none!important;opacity:1!important;transform:none!important}
  .motion-rebuild .plan-card.is-selected:before{animation:none!important}
 }
+
+/* Clear, user-controlled demonstration: the photo really changes shape and source. */
+.morph-play-trigger{
+ position:absolute;z-index:16;right:clamp(20px,4vw,55px);bottom:99px;
+ border:1px solid #e6f4de;background:#dff4ce;color:#254e36;
+ padding:12px 23px;border-radius:99px;font-size:12px;font-weight:800;
+ box-shadow:0 11px 28px #0e291b42;transition:background .2s,transform .2s;
+}
+.morph-play-trigger:hover{background:#fff8dd;transform:translateY(-3px)}
+.morph-play-trigger:focus-visible{outline:3px solid #e99b71;outline-offset:3px}
+@media(max-width:610px){
+ .morph-play-trigger{left:50%;right:auto;bottom:100px;transform:translateX(-50%);white-space:nowrap;padding:11px 17px;font-size:11px}
+ .morph-play-trigger:hover{transform:translateX(-50%)}
+}
+@media(prefers-reduced-motion:reduce){.morph-play-trigger{display:none!important}}
