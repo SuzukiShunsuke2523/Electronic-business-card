@@ -1,0 +1,43 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LUNOA JS Prototype / Viewport QA</title><style>
+body{margin:0;padding:20px;background:#eef2e8;color:#17362a;font:14px/1.5 system-ui,sans-serif}h1{font-size:23px}#summary{background:white;border-radius:9px;padding:14px;font-weight:800}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:20px}.item{background:white;padding:15px;border-radius:10px;border:1px solid #cbdec9}.ok{color:#14774b}.bad{color:#b03625}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px}.hidden{position:absolute;left:-10000px;top:0;pointer-events:none}</style></head><body><h1>JavaScript演出試作｜4画面幅QA</h1><p>320 / 390 / 768 / 1280pxで、ファーストビュー・第2シーン・スクロール演出・操作ボタンを検証します。</p><div id="summary">検証中…</div><div class="grid" id="output"></div><div class="hidden" id="frames"></div><script>
+(async()=>{
+const widths=[320,390,768,1280],all=[],sleep=ms=>new Promise(r=>setTimeout(r,ms)),out=document.getElementById("output");
+async function verify(width){
+ const iframe=document.createElement("iframe");iframe.width=width;iframe.height=800;iframe.style.width=width+"px";iframe.style.height="800px";iframe.style.border="0";iframe.title=width+"px QA";
+ const loaded=new Promise((resolve,reject)=>{iframe.onload=resolve;iframe.onerror=()=>reject(new Error("iframe failed"))});
+ iframe.src="./index.html?qa=1";document.getElementById("frames").append(iframe);await loaded;
+ const win=iframe.contentWindow,doc=win.document;
+ for(let i=0;i<100&&doc.documentElement.dataset.motionReady!=="true";i++)await sleep(100);
+ const checks={},detail={},issues=[];
+ checks.loaded=doc.documentElement.dataset.motionReady==="true";
+ checks.viewport=win.innerWidth===width;
+ checks.noHorizontalScroll=doc.documentElement.scrollWidth<=width+2;
+ const selectors=[".site-header",".identity",".header-review",".hero-copy",".hero-copy h1",".stage-meta",".phase-navigation","#review .review-inner"];
+ for(const sel of selectors){const el=doc.querySelector(sel);if(!el){issues.push(sel+" missing");continue}const b=el.getBoundingClientRect();if(b.left< -4||b.right>width+4)issues.push(sel+": "+b.left.toFixed(1)+"–"+b.right.toFixed(1));}
+ checks.elementsFit=issues.length===0;detail.overflow=issues;
+ checks.threeSeekButtons=doc.querySelectorAll("[data-seek]").length===3;
+ checks.svgPetals=doc.querySelectorAll(".petals-front path").length===8;
+ checks.noExternalForms=doc.querySelectorAll("form").length===0;
+ const stage=doc.querySelector("#top"),total=stage.offsetHeight-win.innerHeight;
+ win.scrollTo({top:Math.round(total*.44),behavior:"instant"});
+ await sleep(250);
+ const pMid=Number(doc.documentElement.dataset.motionProgress||0),phaseMid=doc.documentElement.dataset.motionScene;
+ checks.bloomPhase=phaseMid==="2"&&pMid>.35&&pMid<.55;
+ const scale=Number(doc.querySelector("#stage").style.getPropertyValue("--bloom-scale"));
+ checks.flowerExpands=scale>1.7;
+ win.scrollTo({top:Math.round(total*.96),behavior:"instant"});
+ await sleep(250);
+ const pEnd=Number(doc.documentElement.dataset.motionProgress||0);
+ const arrival=doc.querySelector("#arrivalCopy");
+ checks.beyondPhase=doc.documentElement.dataset.motionScene==="3"&&pEnd>.88;
+ checks.arrivalReadable=Number(doc.querySelector("#stage").style.getPropertyValue("--arrival-opacity"))>.9&&arrival.inert===false;
+ checks.lightWorld=Number(doc.querySelector("#stage").style.getPropertyValue("--light-opacity"))>.95;
+ checks.reviewLink=!!doc.querySelector('a[href="#review"]');
+ detail.progress={mid:pMid,end:pEnd,scale,stageHeight:stage.offsetHeight,viewportHeight:win.innerHeight};
+ const passed=Object.values(checks).every(Boolean);iframe.remove();return {width,passed,checks,detail};
+}
+for(const width of widths){try{all.push(await verify(width))}catch(err){all.push({width,passed:false,error:String(err)})}}
+for(const entry of all){const section=document.createElement("section");section.className="item";const h=document.createElement("h2");h.textContent=entry.width+"px "+(entry.passed?"PASS":"FAIL");h.className=entry.passed?"ok":"bad";const pre=document.createElement("pre");pre.textContent=JSON.stringify(entry,null,2);section.append(h,pre);out.append(section)}
+const success=all.every(x=>x.passed);const summary=document.getElementById("summary");summary.textContent=success?"PASS｜4画面幅の演出・配置・操作を確認":"FAIL｜一部のチェックに問題があります";summary.className=success?"ok":"bad";document.documentElement.dataset.qaComplete="true";window.LUNOA_PROTOTYPE_QA=all;
+})();
+</script></body></html>
