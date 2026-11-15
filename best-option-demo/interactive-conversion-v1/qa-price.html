@@ -1,0 +1,64 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>LUNOA 金額静止と滑らかな選択｜QA</title>
+<style>body{margin:0;padding:22px;background:#eef3ed;color:#284737;font:14px/1.5 system-ui,sans-serif}h1{font-size:22px}#status{padding:14px;border-radius:9px;background:white;font-weight:750}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:12px;margin-top:15px}.card{background:#fff;border:1px solid #c8dacb;border-radius:9px;padding:13px}.ok{color:#167d4a}.bad{color:#b53728}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:10px}.offscreen{position:absolute;left:-20000px;top:0;pointer-events:none}</style>
+</head><body><h1>料金は動かさず、選択だけ滑らかに｜実画面QA</h1><p>320・390・768・1280pxで、料金が全フレーム正しい値で静止すること、カードが位置を跳ねず背景が徐々に変化すること、基本操作が動くことを確認します。</p><div id="status">検証中…</div><div id="cards" class="grid"></div><div id="frames" class="offscreen"></div>
+<script>
+(async()=>{
+const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const outcomes=[];
+async function run(width){
+ const frame=document.createElement("iframe");frame.title=width+"px QA";frame.width=width;frame.height=820;frame.style.width=width+"px";frame.style.height="820px";
+ const load=new Promise((resolve,reject)=>{frame.onload=resolve;frame.onerror=()=>reject(new Error("iframe failed"))});
+ frame.src="./index.html?qa-price=1";document.getElementById("frames").append(frame);await load;
+ const win=frame.contentWindow,doc=win.document,$=s=>doc.querySelector(s),checks={},notes={};
+ for(let n=0;n<70&&!(doc.documentElement.dataset.motionRebuildReady==="true"&&doc.documentElement.dataset.ready==="true");n++)await sleep(100);
+ checks.ready=doc.documentElement.dataset.motionRebuildReady==="true"&&doc.documentElement.dataset.ready==="true";
+ await sleep(160);
+ const single=$('[data-plan="single"]'),ticket=$('[data-plan="ticket"]'),trial=$('[data-plan="trial"]'),price=$("#selected-price"),panel=$(".selected-plan");
+ const initialY=ticket.getBoundingClientRect().y;
+ const initialColor=win.getComputedStyle(ticket).backgroundColor;
+ const initialPanelBg=win.getComputedStyle(panel).backgroundColor;
+ const dur=win.getComputedStyle(ticket).transitionDuration;
+ checks.slowColorTransition=dur.split(",").some(v=>parseFloat(v)>=.65);
+ checks.noSelectionLift=win.getComputedStyle(ticket).transform==="none";
+ checks.noPriceAnimations=win.getComputedStyle(price).animationName==="none";
+ const values=[];
+ ticket.click();
+ values.push(price.textContent.trim());
+ const earlyY=ticket.getBoundingClientRect().y;
+ const earlyBg=win.getComputedStyle(ticket).backgroundColor;
+ await sleep(260);
+ values.push(price.textContent.trim());
+ const midBg=win.getComputedStyle(ticket).backgroundColor;
+ const midPanelBg=win.getComputedStyle(panel).backgroundColor;
+ await sleep(720);
+ values.push(price.textContent.trim());
+ const lateBg=win.getComputedStyle(ticket).backgroundColor;
+ const latePanelBg=win.getComputedStyle(panel).backgroundColor;
+ const lateY=ticket.getBoundingClientRect().y;
+ checks.ticketPriceAlwaysExact=values.every(v=>v.startsWith("¥26,000"));
+ checks.ticketAnimatedBackground=initialColor!==midBg&&midBg!==lateBg;
+ checks.panelBackgroundEases=initialPanelBg!==midPanelBg&&midPanelBg!==latePanelBg;
+ checks.ticketNeverJumps=Math.abs(initialY-earlyY)<1.5&&Math.abs(initialY-lateY)<1.5;
+ checks.ticketSelected=ticket.getAttribute("aria-pressed")==="true";
+ notes.ticket={values,initialColor,earlyBg,midBg,lateBg,initialPanelBg,midPanelBg,latePanelBg,transitionDuration:dur,y:[initialY,earlyY,lateY]};
+ single.click();const singleValues=[price.textContent.trim()];
+ await sleep(130);singleValues.push(price.textContent.trim());
+ await sleep(180);singleValues.push(price.textContent.trim());
+ checks.singlePriceAlwaysExact=singleValues.every(v=>v.startsWith("¥7,000"));
+ checks.singleSelected=single.getAttribute("aria-pressed")==="true";
+ notes.singleValues=singleValues;
+ const modalButton=$('[data-open-guide]');modalButton.click();
+ checks.dialogPreserved=$("#booking-dialog").open&&$("#guide-plan").textContent.includes("¥7,000");
+ $('[data-close-guide]').click();checks.dialogCloses=!$("#booking-dialog").open;
+ const faq=$("#faq details");faq.querySelector("summary").click();checks.faqPreserved=faq.open;
+ checks.noHorizontalOverflow=doc.documentElement.scrollWidth<=width+3;
+ checks.noFormSubmission=doc.querySelectorAll("form").length===0;
+ const ok=Object.values(checks).every(Boolean);
+ frame.remove();return {width,ok,checks,notes};
+}
+for(const width of [320,390,768,1280]){try{outcomes.push(await run(width))}catch(error){outcomes.push({width,ok:false,error:String(error)})}}
+outcomes.forEach(r=>{const card=document.createElement("section");card.className="card";const title=document.createElement("h2");title.textContent=r.width+"px — "+(r.ok?"PASS":"FAIL");title.className=r.ok?"ok":"bad";const pre=document.createElement("pre");pre.textContent=JSON.stringify(r,null,2);card.append(title,pre);document.getElementById("cards").append(card)});
+const total=outcomes.every(x=>x.ok),status=document.getElementById("status");status.textContent=total?"PASS｜金額は静止・カード背景と要約背景は滑らかに変化":"FAIL｜一部の項目を確認してください";status.className=total?"ok":"bad";
+document.documentElement.dataset.qaComplete="true";window.PRICE_SELECTION_QA=outcomes;
+})();
+</script></body></html>
