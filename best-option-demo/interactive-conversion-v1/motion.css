@@ -70,18 +70,69 @@
 .motion-rebuild .experience-pictures{overflow:hidden}
 .motion-rebuild .experience-pictures img{transform:scale(1.09);transition:transform 1.3s var(--ease)}
 .motion-rebuild .experience-pictures.is-visible img{transform:scale(1)}
-.motion-rebuild .plan-card{position:relative;isolation:isolate;overflow:hidden;transition:transform .34s var(--ease),border-color .25s,background .25s,box-shadow .3s}
-.motion-rebuild .plan-card.is-selected{transform:translateY(-10px);box-shadow:0 22px 44px #315b3828!important}
-.motion-rebuild .plan-card.is-selected:before{content:"";position:absolute;inset:-90%;pointer-events:none;background:linear-gradient(117deg,transparent 43%,#d1eac329 50%,transparent 57%);animation:cardSweep .8s ease both;z-index:-1}
-@keyframes cardSweep{from{transform:translateX(-25%)}to{transform:translateX(27%)}}
-.motion-rebuild .selected-plan{transition:background .4s,border-color .4s}
-.motion-rebuild .pricing-section[data-active-plan="trial"] .selected-plan{background:#e3efe0}
-.motion-rebuild .pricing-section[data-active-plan="single"] .selected-plan{background:#e4eaf2}
-.motion-rebuild .pricing-section[data-active-plan="ticket"] .selected-plan{background:#eee2d8}
-.motion-rebuild .pricing-section[data-active-plan="ticket"] .plan-card.is-selected{background:#f6eee6;border-color:#8e8067}
-.motion-rebuild .pricing-section[data-active-plan="single"] .plan-card.is-selected{background:#f0f5fa;border-color:#728ca0}
-.motion-rebuild .selected-summary.changed,.motion-rebuild .selected-price.changed{animation:summaryAppear .45s var(--ease)}
-@keyframes summaryAppear{from{transform:translateY(12px);opacity:.3}to{transform:translateY(0);opacity:1}}
+/* Quiet, premium plan selection — no number count-up, card jump or sweep. */
+.motion-rebuild .plan-card{
+  position:relative;isolation:isolate;overflow:hidden;
+  border:2px solid #d1dfd1;padding:24px;
+  background-color:#fffefa;transform:none!important;
+  box-shadow:0 0 0 rgba(49,91,56,0);
+  transition:background-color .82s cubic-bezier(.22,.7,.2,1),
+             border-color .82s cubic-bezier(.22,.7,.2,1),
+             box-shadow .82s cubic-bezier(.22,.7,.2,1);
+}
+.motion-rebuild .plan-card:hover{transform:none!important;border-color:#90aa91}
+.motion-rebuild .plan-card::before{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(140deg,rgba(255,255,255,.56),transparent 76%);
+  opacity:0;transition:opacity .82s cubic-bezier(.22,.7,.2,1);
+}
+.motion-rebuild .plan-card.is-selected{
+  transform:none!important;padding:24px;background-color:#f3faf0;
+  border-color:#52735b;box-shadow:0 9px 25px rgba(49,91,56,.13);
+}
+.motion-rebuild .plan-card.is-selected::before{opacity:1}
+.motion-rebuild .plan-card .select-circle{
+  transition:background-color .68s ease,border-color .68s ease;
+}
+.motion-rebuild .plan-card .select-circle::before{
+  content:"✓";opacity:0;transform:scale(.65);
+  transition:opacity .68s ease,transform .68s cubic-bezier(.22,.7,.2,1);
+}
+.motion-rebuild .plan-card.is-selected .select-circle::before{
+  opacity:1;transform:scale(1);
+}
+.motion-rebuild .selected-plan{
+  transition:background-color .88s cubic-bezier(.22,.7,.2,1),
+             box-shadow .88s cubic-bezier(.22,.7,.2,1);
+}
+.motion-rebuild .pricing-section[data-active-plan="trial"] .selected-plan{background-color:#e3efe0}
+.motion-rebuild .pricing-section[data-active-plan="single"] .selected-plan{background-color:#e4eaf2}
+.motion-rebuild .pricing-section[data-active-plan="ticket"] .selected-plan{background-color:#eee2d8}
+.motion-rebuild .pricing-section[data-active-plan="ticket"] .plan-card.is-selected{background-color:#f6eee6;border-color:#8e8067}
+.motion-rebuild .pricing-section[data-active-plan="single"] .plan-card.is-selected{background-color:#f0f5fa;border-color:#728ca0}
+/* Only the descriptive summary gently settles in. Never animate yen amounts. */
+.motion-rebuild .selected-summary.changed{
+  animation:quietSummary .78s cubic-bezier(.22,.7,.2,1) both;
+}
+@keyframes quietSummary{
+  from{opacity:.78;transform:translateY(4px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.motion-rebuild .selected-price,
+.motion-rebuild .plan-price{
+  animation:none!important;transition:none!important;
+  font-variant-numeric:tabular-nums;
+}
+@media(prefers-reduced-motion:reduce){
+  .motion-rebuild .plan-card,
+  .motion-rebuild .plan-card::before,
+  .motion-rebuild .plan-card .select-circle,
+  .motion-rebuild .plan-card .select-circle::before,
+  .motion-rebuild .selected-plan{
+    transition:none!important;
+  }
+  .motion-rebuild .selected-summary.changed{animation:none!important}
+}
 .motion-rebuild .flow-item{transition:padding .25s,background .25s}
 .motion-rebuild .flow-item:hover{padding-left:14px;background:#f7faf1}
 .motion-review{padding:85px 0 95px;background:#eaf0e7}
