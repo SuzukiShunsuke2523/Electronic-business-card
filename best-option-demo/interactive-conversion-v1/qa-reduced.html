@@ -1,0 +1,59 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>LUNOA iPhone Reduced Motion QA</title>
+<style>body{font:14px/1.5 system-ui,sans-serif;background:#eef3eb;color:#23412e;padding:20px;margin:0}h1{font-size:22px}#status{background:#fff;border-radius:8px;padding:16px;font-weight:bold}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:13px;margin-top:18px}.card{background:#fff;border:1px solid #c6d6c7;border-radius:8px;padding:14px}.ok{color:#157e4c}.bad{color:#ae3030}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px}.frames{position:absolute;left:-20000px;top:0;pointer-events:none}</style>
+</head><body><h1>iPhoneで動かない問題｜軽減設定ONの再生QA</h1>
+<p>「視差効果を減らす」の状態を <code>?qa-reduced=1</code> で再現。初期画面は静止、明示的に再生ボタンを押したときだけ写真が全画面へ広がり、2枚目に切り替わるかを検証します。</p>
+<div id="status">検証中…</div><div class="grid" id="cards"></div><div class="frames" id="frames"></div>
+<script>
+(async()=>{
+const widths=[320,390,768],wait=ms=>new Promise(r=>setTimeout(r,ms)),records=[];
+async function test(width){
+ const checks={},details={},iframe=document.createElement("iframe");
+ iframe.width=width;iframe.height=820;iframe.style.width=width+"px";iframe.style.height="820px";iframe.title="Reduced motion QA "+width;
+ const loaded=new Promise((ok,no)=>{iframe.onload=ok;iframe.onerror=()=>no(new Error("Load failed"))});
+ iframe.src="./index.html?qa-reduced=1";document.getElementById("frames").append(iframe);await loaded;
+ const win=iframe.contentWindow,doc=win.document;
+ for(let k=0;k<100&&doc.documentElement.dataset.motionRebuildReady!=="true";k++)await wait(100);
+ const $=s=>doc.querySelector(s);
+ checks.jsReady=doc.documentElement.dataset.motionRebuildReady==="true";
+ checks.staticByDefault=doc.documentElement.dataset.motionPreference==="reduced-static";
+ checks.reducedMessageVisible=!!$("#morph-reduced-message")&&win.getComputedStyle($("#morph-reduced-message")).display!=="none";
+ checks.sceneButtonsVisible=!!$(".morph-controls")&&win.getComputedStyle($(".morph-controls")).display!=="none";
+ checks.playButtonVisible=!!$("#morph-play")&&win.getComputedStyle($("#morph-play")).display!=="none";
+ const stage=$("#morph-sticky"),section=$("#motion-story"),bar=$(".mobile-bar");
+ win.scrollTo({top:Math.round(section.getBoundingClientRect().top+win.scrollY-65),behavior:"instant"});
+ await wait(260);
+ const button=$("#morph-play"),buttonBox=button.getBoundingClientRect(),barBox=bar.getBoundingClientRect();
+ details.playButtonRect={top:buttonBox.top,bottom:buttonBox.bottom};details.fixedBarTop=barBox.top;
+ checks.playAboveFixedBar=(width>610)||buttonBox.bottom<barBox.top-5;
+ checks.threeButtons=$$("[data-morph-seek]",doc).length===3;
+ function $$(s,r){return [...r.querySelectorAll(s)]}
+ button.click();
+ await wait(2600);
+ details.state=doc.documentElement.dataset.motionPreference;
+ details.progress=doc.documentElement.dataset.morphProgress;
+ details.photoB=doc.documentElement.dataset.morphPhotoB;
+ details.optIn=doc.body.dataset.motionOptin;
+ details.frameWidth=$("#morph-image-frame").getBoundingClientRect().width;
+ details.radius=win.getComputedStyle($("#morph-image-frame")).borderTopLeftRadius;
+ checks.optIn=doc.body.dataset.motionOptin==="true";
+ checks.playFinished=doc.documentElement.dataset.morphPlayFinished==="true";
+ checks.finalScene=Number(doc.documentElement.dataset.morphProgress)>.92;
+ checks.secondPhoto=Number(doc.documentElement.dataset.morphPhotoB)>.95;
+ checks.expandedPhoto=details.frameWidth>width*.93;
+ checks.radiusRemoved=parseFloat(details.radius)<30;
+ checks.noHorizontalScroll=doc.documentElement.scrollWidth<=width+4;
+ // Buttons still work after explicitly opted-in animation.
+ const phases=$$("[data-morph-seek]",doc);
+ phases[1].click();await wait(160);
+ checks.phaseButton2=doc.documentElement.dataset.morphPhase==="2";
+ phases[2].click();await wait(160);
+ checks.phaseButton3=doc.documentElement.dataset.morphPhase==="3";
+ const passed=Object.values(checks).every(Boolean);
+ iframe.remove();return {width,passed,checks,details};
+}
+for(const width of widths){try{records.push(await test(width))}catch(e){records.push({width,passed:false,error:String(e)})}}
+for(const rec of records){let card=document.createElement("section");card.className="card";const head=document.createElement("h2");head.textContent=rec.width+"px — "+(rec.passed?"PASS":"FAIL");head.className=rec.passed?"ok":"bad";const pre=document.createElement("pre");pre.textContent=JSON.stringify(rec,null,2);card.append(head,pre);document.getElementById("cards").append(card)}
+const pass=records.every(x=>x.passed);const status=document.getElementById("status");status.className=pass?"ok":"bad";status.textContent=pass?"PASS｜3画面幅で軽減設定ONから手動再生・終点到達を検証":"FAIL｜一部の項目が未合格です";
+document.documentElement.dataset.qaComplete="true";window.IPHONE_MOTION_QA=records;
+})();
+</script></body></html>

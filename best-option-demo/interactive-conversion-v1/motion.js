@@ -8,6 +8,41 @@
   const price=document.getElementById("selected-price");
   const photo=document.querySelector(".motion-hero-photo");
   const reduced=window.matchMedia("(prefers-reduced-motion: reduce)");
+  // Test override lets us verify the iPhone accessibility case in a normal browser.
+  const forcedReduced=new URLSearchParams(window.location.search).get("qa-reduced")==="1";
+  let optIn=false;
+  const wantsReduced=()=>reduced.matches||forcedReduced;
+  const motionEnabled=()=>!wantsReduced()||optIn;
+  const playbackButton=document.getElementById("morph-play");
+  const imageFrame=document.getElementById("morph-image-frame");
+  const motionVars=["--morph-frame-dark","--morph-img-scale","--morph-photo-b-opacity","--morph-intro-opacity","--morph-wide-opacity","--morph-finale-opacity","--morph-light-opacity"];
+  function resetStaticScene(){
+    if(!imageFrame||!stage)return;
+    for(const prop of ["width","height","left","top","borderRadius"])imageFrame.style[prop]="";
+    for(const prop of motionVars)stage.style.removeProperty(prop);
+    stage.classList.remove("is-full");
+    document.getElementById("morph-intro-copy").setAttribute("aria-hidden","false");
+    document.getElementById("morph-wide-copy").setAttribute("aria-hidden","true");
+    document.getElementById("morph-finale-copy").setAttribute("aria-hidden","true");
+    root.dataset.morphProgress="0.000";
+    root.dataset.morphPhase="1";
+    root.dataset.morphPhotoB="0.000";
+  }
+  function syncReducedState(){
+    const isReduced=wantsReduced();
+    body.dataset.motionReduced=String(isReduced);
+    body.dataset.motionOptin=String(optIn);
+    body.classList.toggle("js-motion",motionEnabled());
+    if(!motionEnabled())resetStaticScene();
+    root.dataset.motionPreference=isReduced?(optIn?"manual-opt-in":"reduced-static"):"normal";
+    if(playbackButton)playbackButton.textContent=isReduced&&!optIn?"▶ 動きを再生する":"▶ 自動で変化を見る";
+  }
+  function enableOnRequest(){
+    if(!wantsReduced()||optIn)return false;
+    optIn=true;
+    syncReducedState();
+    return true;
+  }
   const phaseButtons=[...document.querySelectorAll("[data-morph-seek]")];
   const intro=document.getElementById("morph-intro-copy");
   const wide=document.getElementById("morph-wide-copy");
@@ -29,7 +64,7 @@
   }
   function phaseFor(v){return v<.36?0:v<.75?1:2;}
   function updateScene(v){
-    if(reduced.matches)return;
+    if(!motionEnabled())return;
     p=v;
     const open=ease(.08,.66,v);
     const second=ease(.72,.9,v);
@@ -85,8 +120,8 @@
   }
   function onScroll(){
     scrollQueued=false;
-    if(!reduced.matches)updateScene(getProgress());
-    if(photo&&!reduced.matches){
+    if(motionEnabled())updateScene(getProgress());
+    if(photo&&motionEnabled()){
       const rect=photo.getBoundingClientRect();
       if(rect.top<lastHeight&&rect.bottom>0){
         const shift=clamp((rect.top-lastHeight*.24)/lastHeight,-1,1);
@@ -109,7 +144,7 @@
     playFrame=null;playing=false;
   }
   function playTransition(){
-    if(reduced.matches){document.getElementById("motion-review").scrollIntoView();return;}
+    if(!motionEnabled())return;
     stopPlayback();
     const from=getProgress(),to=from>.8?0:.96;
     const initial=window.scrollY,final=targetY(to),duration=1650;
@@ -126,23 +161,48 @@
   }
   phaseButtons.forEach(button=>button.addEventListener("click",()=>{
     stopPlayback();
-    if(reduced.matches){document.getElementById("motion-review").scrollIntoView();return;}
-    window.scrollTo({top:targetY(Number(button.dataset.morphSeek)),behavior:"smooth"});
+    const target=Number(button.dataset.morphSeek);
+    if(enableOnRequest()){
+      // Wait for the compact accessible fallback to expand into the scroll stage.
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        lastWidth=innerWidth;lastHeight=innerHeight;
+        window.scrollTo(0,targetY(target));queueScroll();
+      }));
+      return;
+    }
+    if(!motionEnabled())return;
+    const scrollTarget=targetY(target);
+    // An explicit scene choice is allowed even with an OS preference to reduce motion.
+    window.scrollTo({top:scrollTarget,behavior:wantsReduced()?"instant":"smooth"});
+    queueScroll();
   }));
-  const play=document.getElementById("morph-play");
-  if(play)play.addEventListener("click",playTransition);
+  if(playbackButton)playbackButton.addEventListener("click",()=>{
+    if(enableOnRequest()){
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        lastWidth=innerWidth;lastHeight=innerHeight;
+        window.scrollTo(0,targetY(0));queueScroll();
+        requestAnimationFrame(playTransition);
+      }));
+    }else playTransition();
+  });
   window.addEventListener("wheel",()=>{if(playing)stopPlayback()},{passive:true});
   window.addEventListener("touchstart",()=>{if(playing)stopPlayback()},{passive:true});
   window.addEventListener("scroll",queueScroll,{passive:true});
   window.addEventListener("resize",()=>{lastWidth=window.innerWidth;lastHeight=window.innerHeight;queueScroll()},{passive:true});
-  reduced.addEventListener?.("change",()=>{stopPlayback();queueScroll();});
+  reduced.addEventListener?.("change",()=>{
+    stopPlayback();
+    // A new OS preference must never auto-start motion.
+    optIn=false;
+    syncReducedState();
+    queueScroll();
+  });
   // Price selection remains the original functional pricing logic from conversion-v1.
   // These additions are purely presentational and never submit a booking.
   const amounts={trial:3000,single:7000,ticket:26000};
   function format(n){return Math.round(n).toLocaleString("ja-JP");}
   function animateNumber(target){
     if(numberFrame!==null)cancelAnimationFrame(numberFrame);
-    if(reduced.matches||!price){numberValue=target;return;}
+    if(!motionEnabled()||!price){numberValue=target;return;}
     const startValue=numberValue,start=performance.now(),duration=520;
     let text=price.firstChild;
     if(!text||text.nodeType!==3){price.insertBefore(document.createTextNode(""),price.firstChild);text=price.firstChild;}
@@ -170,7 +230,7 @@
     animateNumber(amounts[key]);
   }));
   if(pricing)pricing.dataset.activePlan="trial";
-  const obs=("IntersectionObserver" in window&&!reduced.matches)?new IntersectionObserver(entries=>{
+  const obs=("IntersectionObserver" in window&&!wantsReduced())?new IntersectionObserver(entries=>{
     for(const entry of entries){
       if(entry.isIntersecting){
         entry.target.classList.add("is-visible");
@@ -182,7 +242,7 @@
     if(obs)obs.observe(element);else element.classList.add("is-visible");
   }
   root.classList.add("motion-live");
-  if(!reduced.matches)body.classList.add("js-motion");
+  syncReducedState();
   root.dataset.motionRebuildReady="true";
   queueScroll();
 })();
