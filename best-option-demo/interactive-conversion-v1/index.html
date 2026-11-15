@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#f8f7f0">
+<meta name="description" content="集客重視のLUNOA PILATESをベースに、写真が画面全体へ変形するスクロール演出と操作体験を追加したJavaScript試作。未完成・レビュー用。">
+<title>LUNOA PILATES｜JavaScript Motion · 集客版ベース【レビュー用】</title>
+<link rel="preconnect" href="https://images.pexels.com" crossorigin>
+<link rel="stylesheet" href="../conversion-v1/style.css">
+<link rel="stylesheet" href="motion.css">
+<script defer src="../conversion-v1/app.js"></script>
+<script defer src="motion.js"></script>
+</head>
+<body class="motion-rebuild">
+<a class="skip-link" href="#main">本文へスキップ</a>
+<div class="sample-ribbon">BEST OPTION｜③JavaScript版・制作途中のレビュー用です。あなたのOKまでは未完成です。</div>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="#top" aria-label="LUNOA PILATES ホーム"><span class="brand-icon" aria-hidden="true">✳</span><span>LUNOA<small>PILATES STUDIO</small></span></a>
+    <nav class="desktop-nav" aria-label="メインメニュー">
+      <a href="#motion-story">動く演出</a><a href="#about">レッスンの特徴</a><a href="#plans">料金</a><a href="#first-visit">初回の流れ</a><a href="#faq">よくある質問</a>
+    </nav>
+    <a class="header-cta" href="#plans">体験3,000円 <span aria-hidden="true">↗</span></a>
+  </div>
+</header>
+<main id="main">
+<section class="hero" id="top">
+  <div class="hero-content">
+    <div class="hero-copy">
+      <p class="eyebrow"><span class="eyebrow-dash"></span> YOUR FIRST STEP TO FEEL BETTER</p>
+      <p class="hero-label">はじめての方も安心の、完全予約制パーソナルピラティス <span class="small-demo">（設定例）</span></p>
+      <h1><span class="hero-clip"><span>整える時間を、</span></span><span class="hero-clip"><span><em>わたしのために。</em></span></span></h1>
+      <p class="hero-description">周りを気にせず、自分のペースで始めるピラティス。メニューも料金も、初めての日の流れも、ここでまとめて確認できます。</p>
+      <div class="hero-cta-row">
+        <a class="btn btn-primary" href="#plans">まずは体験レッスンを見る <span aria-hidden="true">↗</span></a>
+        <a class="quiet-link motion-go-link" href="#motion-story">写真が変形する演出を見る <span aria-hidden="true">↓</span></a>
+      </div>
+      <div class="hero-price"><span class="price-bubble">TRIAL LESSON</span><span>体験 <strong>¥3,000</strong> <small>/ 50分</small></span></div>
+      <p class="hero-micro">※ 料金・サービス内容は営業用デモの仮設定です。</p>
+    </div>
+    <div class="hero-media motion-hero-photo">
+      <img src="https://images.pexels.com/photos/25596679/pexels-photo-25596679/free-photo-of-fit-woman-exercising-on-pilates-reformer.jpeg?auto=compress&dpr=1&h=750&w=1260" alt="ピラティス専用マシンでエクササイズする人物のイメージ写真" width="1260" height="750" fetchpriority="high" decoding="async">
+      <div class="image-wash" aria-hidden="true"></div>
+      <div class="hero-image-stamp"><span>MOVE</span><b>at your<br>own pace.</b></div><div class="hero-frame-line" aria-hidden="true"></div>
+      <span class="photo-credit">STOCK PHOTO / PEXELS</span>
+    </div>
+  </div>
+  <div class="hero-bottom-line"><span>01 — YOUR BODY, YOUR PACE</span><a href="#about">SCROLL TO EXPLORE <span aria-hidden="true">↓</span></a></div>
+</section>
+
+
+<section class="morph-story" id="motion-story" aria-label="スクロールで写真と画面の形が変化するJavaScript演出">
+ <div class="morph-sticky" id="morph-sticky">
+  <div class="morph-surface" aria-hidden="true"></div>
+  <div class="morph-decoration" aria-hidden="true">MOTION</div>
+
+  <div class="morph-image-frame" id="morph-image-frame" role="img" aria-label="ピラティスのストック写真がスクロールで縦長から画面全体へ広がり、別の写真へ変化する">
+   <img class="morph-image morph-image-first" src="https://images.pexels.com/photos/25596679/pexels-photo-25596679/free-photo-of-fit-woman-exercising-on-pilates-reformer.jpeg?auto=compress&dpr=1&h=750&w=1260" alt="" aria-hidden="true" width="1260" height="750" loading="lazy" decoding="async">
+   <img class="morph-image morph-image-second" src="https://images.pexels.com/photos/25599837/pexels-photo-25599837.jpeg?cs=srgb&dl=pexels-ahmetkurt-25599837.jpg&fm=jpg" alt="" aria-hidden="true" width="1260" height="750" loading="lazy" decoding="async">
+   <div class="morph-image-tint" aria-hidden="true"></div>
+   <div class="morph-photo-label" aria-hidden="true">LUNOA / IN MOTION</div>
+  </div>
+
+  <div class="morph-intro-copy" id="morph-intro-copy">
+    <span class="morph-kicker"><span class="morph-kicker-line"></span> 01 / TRANSFORM YOUR VIEW</span>
+    <h2>写真が、<br><em>動き出す。</em></h2>
+    <p>スクロールしてみてください。<br>写真の形も、画面の空気も、<br>はっきりと変わります。</p>
+  </div>
+
+  <div class="morph-wide-copy" id="morph-wide-copy" aria-hidden="true">
+    <span class="morph-kicker light">02 / FULL SCREEN EXPERIENCE</span>
+    <h2>一枚の写真が、<br><em>空間になる。</em></h2>
+    <p>SCROLL TO SEE THE CHANGE</p>
+  </div>
+
+  <div class="morph-finale-copy" id="morph-finale-copy" aria-hidden="true">
+    <span class="morph-kicker light">03 / A DIFFERENT SCENE</span>
+    <h2>次の景色へ、<br><em>なめらかに。</em></h2>
+    <p>写真・文字・背景が、一緒に切り替わる。</p>
+  </div>
+
+  <div class="morph-progress" aria-hidden="true"><span id="morph-progress-bar"></span></div>
+  <div class="morph-counter" id="morph-counter" aria-hidden="true">01 / 03</div>
+  <button type="button" class="morph-play-trigger" id="morph-play" aria-label="写真が全画面になり別の写真へ切り替わる演出を自動再生">▶ 自動で変化を見る</button>
+  <div class="morph-controls" role="group" aria-label="演出のシーンを選択">
+    <button type="button" data-morph-seek="0" class="morph-phase is-active" aria-pressed="true">01 <span>縦長の写真</span></button>
+    <button type="button" data-morph-seek="0.55" class="morph-phase" aria-pressed="false">02 <span>画面いっぱい</span></button>
+    <button type="button" data-morph-seek="0.93" class="morph-phase" aria-pressed="false">03 <span>写真が切り替わる</span></button>
+  </div>
+  <span class="morph-scroll-hint" aria-hidden="true">SCROLL TO TRANSFORM ↓</span>
+ </div>
+ <span class="sr-only" id="morph-live" aria-live="polite">シーン1 縦長の写真</span>
+</section>
+
+<section class="promise-section" id="about" aria-labelledby="about-title">
+  <div class="section-width">
+    <div class="section-intro reveal">
+      <span class="eyebrow">WHY PERSONAL PILATES</span>
+      <h2 id="about-title">一人ひとりのペースに、<br>寄り添うレッスン。</h2>
+      <p>初めての方が知りたいことを、できるだけシンプルにまとめました。</p>
+    </div>
+    <div class="promise-grid">
+      <article class="promise-card reveal" style="--delay:0ms"><span class="feature-num">01</span><span class="feature-icon" aria-hidden="true">✳</span><h3>1対1で、焦らず</h3><p>周りのペースを気にせず、身体の状態やその日の気分に合わせて取り組める設定です。</p></article>
+      <article class="promise-card reveal" style="--delay:95ms"><span class="feature-num">02</span><span class="feature-icon" aria-hidden="true">◯</span><h3>初めてでも安心</h3><p>呼吸や姿勢の確認から始めるイメージ。流れを事前に把握できるようにしています。</p></article>
+      <article class="promise-card reveal" style="--delay:190ms"><span class="feature-num">03</span><span class="feature-icon" aria-hidden="true">↗</span><h3>選べる通い方</h3><p>体験・単発・4回チケットの3つから、目標や生活リズムに合うプランを選べます。</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="experience-section" aria-labelledby="experience-title">
+  <div class="experience-grid section-width">
+    <div class="experience-pictures reveal">
+      <img src="https://images.pexels.com/photos/25596676/pexels-photo-25596676/free-photo-of-woman-in-gray-top-stretching-on-pilates-reformer.jpeg?auto=compress&dpr=1&h=750&w=1260" alt="ピラティスマシンで身体を伸ばす人物のフリー素材写真" width="1260" height="750" loading="lazy" decoding="async">
+      <div class="picture-badge">A MOMENT<br>FOR YOURSELF.</div>
+    </div>
+    <div class="experience-text reveal">
+      <p class="eyebrow">TAKE YOUR TIME</p>
+      <h2 id="experience-title">自分と向き合う、<br><em>50分。</em></h2>
+      <p>初回は、目的や気になっていることを確認するところから。自分に合うペースを見つける時間をイメージした、架空スタジオのご案内です。</p>
+      <p>レッスンの種類や料金が決まっていなくても、まずは下のプランを比較してみてください。</p>
+      <a class="text-link" href="#plans">メニューと料金を見る <span aria-hidden="true">↗</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="pricing-section" id="plans" aria-labelledby="plans-title">
+  <div class="section-width">
+    <div class="pricing-heading reveal"><div><span class="eyebrow">LESSON & PRICE</span><h2 id="plans-title">プラン・料金</h2><p>料金の違いを見比べて、自分に合うプランを選べます。</p></div><div class="heading-aside">料金はすべて<br>架空デモの設定です</div></div>
+    <div class="plan-grid motion-plan-grid" role="group" aria-label="レッスンプラン選択">
+      <button type="button" class="plan-card is-selected" data-plan="trial" aria-pressed="true">
+        <span class="plan-label">01 / FIRST VISIT</span><span class="plan-tag">はじめての方へ</span><strong>体験レッスン</strong>
+        <span class="plan-description">まずは自分のペースを知る、50分。</span><span class="plan-price"><b>¥3,000</b><small>/ 50分</small></span><span class="plan-select"><span aria-hidden="true" class="select-circle"></span> <span data-choice-label>選択中</span></span>
+      </button>
+      <button type="button" class="plan-card" data-plan="single" aria-pressed="false">
+        <span class="plan-label">02 / ONE TIME</span><span class="plan-tag neutral">都度利用</span><strong>パーソナルレッスン</strong>
+        <span class="plan-description">その日の状態に合わせた1回。</span><span class="plan-price"><b>¥7,000</b><small>/ 50分</small></span><span class="plan-select"><span aria-hidden="true" class="select-circle"></span> <span data-choice-label>選択する</span></span>
+      </button>
+      <button type="button" class="plan-card" data-plan="ticket" aria-pressed="false">
+        <span class="plan-label">03 / CONTINUE</span><span class="plan-tag neutral">継続向け</span><strong>4回チケット</strong>
+        <span class="plan-description">自分のリズムで続けたい方に。</span><span class="plan-price"><b>¥26,000</b><small>/ 50分 × 4回</small></span><span class="plan-select"><span aria-hidden="true" class="select-circle"></span> <span data-choice-label>選択する</span></span>
+      </button>
+    </div>
+    <aside class="selected-plan motion-selected-plan" aria-labelledby="selected-title">
+      <div class="selected-summary" aria-live="polite" aria-atomic="true">
+        <span class="selected-kicker">選択したプラン</span><h3 id="selected-title">体験レッスン</h3><p id="selected-description">初めての方に。レッスンの内容を知るための50分です。</p>
+      </div>
+      <div class="selected-action"><div class="selected-price" id="selected-price">¥3,000 <small>/ 50分</small></div>
+        <button type="button" class="btn btn-contrast" data-open-guide>このプランの予約方法を見る <span aria-hidden="true">↗</span></button>
+      </div>
+    </aside>
+    <p class="pricing-note">※ このページは架空の営業デモのため、実際の予約・決済には進みません。実店舗向けの制作時には、公式LINEや予約サービスへのリンクを設置する想定です。</p>
+  </div>
+</section>
+
+<section class="first-section" id="first-visit" aria-labelledby="first-title">
+ <div class="section-width first-grid">
+   <div class="first-copy reveal"><p class="eyebrow">FIRST VISIT</p><h2 id="first-title">はじめての方へ</h2><p>レッスンまでの流れを先に知っておくと、安心して一歩を踏み出せます。</p>
+    <div class="flow-list motion-flow-list">
+      <div class="flow-item"><span>01</span><div><h3>メニューを選ぶ</h3><p>内容と料金を確認。迷う場合は体験プランから。</p></div></div>
+      <div class="flow-item"><span>02</span><div><h3>希望日時を相談する</h3><p>実際の店舗では公式LINEや予約ページにつながる想定です。</p></div></div>
+      <div class="flow-item"><span>03</span><div><h3>レッスン当日</h3><p>動きやすい服装で、無理なく始めます。</p></div></div>
+    </div>
+    <a href="#faq" class="text-link">よくある質問を見る <span aria-hidden="true">↗</span></a>
+   </div>
+   <figure class="first-image reveal"><img src="https://images.pexels.com/photos/25599837/pexels-photo-25599837.jpeg?cs=srgb&dl=pexels-ahmetkurt-25599837.jpg&fm=jpg" alt="ピラティススタジオでエクササイズする人物のイメージ写真" width="1260" height="750" loading="lazy" decoding="async"><figcaption>※ 写真はフリー素材で、LUNOAの実際の設備ではありません。</figcaption></figure>
+ </div>
+</section>
+
+<section class="faq-section" id="faq" aria-labelledby="faq-title"><div class="section-width faq-grid">
+  <div class="reveal"><p class="eyebrow">QUESTIONS & ANSWERS</p><h2 id="faq-title">よくある質問</h2><p>はじめての不安を減らすため、基本的な質問をまとめました。</p></div>
+  <div class="faq-list">
+    <details><summary>初めてでも大丈夫ですか？ <span aria-hidden="true">＋</span></summary><p>はい。呼吸や姿勢の確認から始めるレッスンを想定しています。</p></details>
+    <details><summary>持ち物は何が必要ですか？ <span aria-hidden="true">＋</span></summary><p>動きやすい服装と飲み物をご用意ください。その他の持ち物は実際の店舗からの案内で確認する想定です。</p></details>
+    <details><summary>どれくらいの頻度がよいですか？ <span aria-hidden="true">＋</span></summary><p>生活リズムや目標に合わせて無理なく通う想定です。まずは体験で相談する流れをイメージしています。</p></details>
+    <details><summary>予約はどこから行いますか？ <span aria-hidden="true">＋</span></summary><p>実際の制作では公式LINEまたは既存の予約サービスへつなぎます。このデモからは予約・送信はできません。</p></details>
+  </div>
+</div></section>
+
+<section class="closing-section" aria-labelledby="closing-title"><div class="section-width closing-inner reveal">
+  <span class="eyebrow">START WITH ONE SMALL STEP</span><h2 id="closing-title">最初の一歩を、<br>心地よく。</h2>
+  <p>わかりやすい料金と、迷わない予約導線。<br>必要な情報を一つにまとめたWebページのデモです。</p>
+  <div class="closing-action"><a class="btn btn-primary" href="#plans">体験レッスン 3,000円を確認する <span aria-hidden="true">↗</span></a><a class="quiet-link" href="../conversion-v1/">元の集客重視版と比べる <span aria-hidden="true">↗</span></a></div>
+  <p class="closing-small">本ページはLUNOA PILATESという架空スタジオの試作です。リアルな問い合わせ先は設置していません。</p>
+</div></section>
+
+<section class="motion-review" id="motion-review" aria-labelledby="motion-review-title">
+ <div class="section-width">
+ <span class="eyebrow">JAVASCRIPT DEMO / REVIEW CHECKPOINT</span>
+ <h2 id="motion-review-title">この動き、どう感じる？</h2>
+ <p>元の集客重視版の構成を保ちつつ、写真の形がスクロールで変わる演出を中心に追加しました。これは③JavaScript版の**未完成の試作**です。あなたのOKが出るまで完成扱いにはしません。</p>
+ <div class="motion-review-actions">
+ <a class="btn btn-primary" href="#motion-story">もう一度、動きを見る <span aria-hidden="true">↑</span></a>
+ <a class="quiet-link" href="../conversion-v1/">元のデザインと比較する <span aria-hidden="true">↗</span></a>
+ </div>
+ </div>
+</section>
+</main>
+<footer class="footer"><div class="section-width footer-inner">
+ <div><div class="footer-brand">✳ LUNOA PILATES</div><p>BEST OPTION｜JavaScript動作版・レビュー中</p><p>Copyright © 2026. Fictional brand / no real booking.</p></div>
+ <div class="footer-links"><a href="../">デモ一覧</a><a href="../conversion-v1/">元の集客重視版</a><a href="https://www.pexels.com/legal-pages/license/" rel="noopener noreferrer" target="_blank">Pexelsライセンス</a></div>
+</div><p class="source-note section-width">写真素材：Pexels / Ahmet Kurt。人物・施設はLUNOA PILATESの実際のスタッフ・店舗ではありません。<a href="https://www.pexels.com/photo/fit-woman-exercising-on-pilates-reformer-25596679/" rel="noopener noreferrer" target="_blank">写真①</a>・<a href="https://www.pexels.com/photo/woman-in-gray-top-stretching-on-pilates-reformer-25596676/" rel="noopener noreferrer" target="_blank">写真②</a>・<a href="https://www.pexels.com/photo/woman-on-a-pilates-tower-25599837/" rel="noopener noreferrer" target="_blank">写真③</a></p></footer>
+<div class="mobile-bar"><div><small>体験レッスン</small><strong>¥3,000</strong></div><a href="#plans">料金を確認する <span aria-hidden="true">↗</span></a></div>
+<dialog class="booking-dialog" id="booking-dialog" aria-labelledby="guide-title"><div class="dialog-content"><button type="button" class="dialog-close" data-close-guide aria-label="閉じる">×</button><span class="eyebrow">HOW TO BOOK / DEMO</span><h2 id="guide-title">予約までの流れ</h2><p class="dialog-choice">選択プラン：<strong id="guide-plan">体験レッスン（¥3,000）</strong></p><ol><li>レッスン内容・料金を確認する</li><li>本番サイトなら、公式LINE・予約サービスで希望日時を伝える</li><li>予約内容を確認して、当日レッスンに参加する</li></ol><p class="dialog-warning">これは動作確認用のデモです。公式LINEへの送信、予約、決済は行いません。</p><button type="button" class="btn btn-primary dialog-finish" data-close-guide>ページに戻る</button></div></dialog>
+</body></html>
