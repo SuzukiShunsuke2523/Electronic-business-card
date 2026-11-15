@@ -5,7 +5,6 @@
   const story=document.getElementById("motion-story");
   const stage=document.getElementById("morph-sticky");
   const pricing=document.querySelector(".pricing-section");
-  const price=document.getElementById("selected-price");
   const photo=document.querySelector(".motion-hero-photo");
   const reduced=window.matchMedia("(prefers-reduced-motion: reduce)");
   // Test override lets us verify the iPhone accessibility case in a normal browser.
@@ -53,7 +52,7 @@
   const clamp=(n,min=0,max=1)=>Math.max(min,Math.min(max,n));
   const ease=(a,b,n)=>{const t=clamp((n-a)/(b-a));return t*t*(3-2*t)};
   const lerp=(a,b,t)=>a+(b-a)*t;
-  let scrollQueued=false,lastPhase=-1,p=0,playing=false,playFrame=null,numberFrame=null,numberValue=3000;
+  let scrollQueued=false,lastPhase=-1,p=0,playing=false,playFrame=null;
   let lastWidth=window.innerWidth,lastHeight=window.innerHeight;
   const set=(key,value)=>stage.style.setProperty(key,value);
   function getProgress(){
@@ -196,39 +195,20 @@
     syncReducedState();
     queueScroll();
   });
-  // Price selection remains the original functional pricing logic from conversion-v1.
-  // These additions are purely presentational and never submit a booking.
-  const amounts={trial:3000,single:7000,ticket:26000};
-  function format(n){return Math.round(n).toLocaleString("ja-JP");}
-  function animateNumber(target){
-    if(numberFrame!==null)cancelAnimationFrame(numberFrame);
-    if(!motionEnabled()||!price){numberValue=target;return;}
-    const startValue=numberValue,start=performance.now(),duration=520;
-    let text=price.firstChild;
-    if(!text||text.nodeType!==3){price.insertBefore(document.createTextNode(""),price.firstChild);text=price.firstChild;}
-    const render=(v)=>{text.textContent="¥"+format(v)+" ";};
-    function frame(now){
-      const t=clamp((now-start)/duration);
-      const value=lerp(startValue,target,1-Math.pow(1-t,4));
-      render(value);
-      numberValue=value;
-      if(t<1)numberFrame=requestAnimationFrame(frame);
-      else{numberFrame=null;numberValue=target;render(target);}
-    }
-    numberFrame=requestAnimationFrame(frame);
-  }
-  document.querySelectorAll("[data-plan]").forEach(button=>button.addEventListener("click",()=>{
-    const key=button.dataset.plan;
-    if(!Object.hasOwn(amounts,key))return;
-    pricing.dataset.activePlan=key;
-    const summary=document.querySelector(".selected-summary");
-    const selectedPrice=document.getElementById("selected-price");
-    for(const el of [summary,selectedPrice]){
-      if(!el)continue;
-      el.classList.remove("changed");void el.offsetWidth;el.classList.add("changed");
-    }
-    animateNumber(amounts[key]);
-  }));
+  // Original conversion-v1/app.js updates the selected plan and its exact
+  // price immediately. No number interpolation, typewriter or count-up.
+  // This layer changes only the decorative background at a measured pace.
+  const choices=new Set(["trial","single","ticket"]);
+  document.querySelectorAll("[data-plan]").forEach(button=>{
+    button.addEventListener("click",()=>{
+      const key=button.dataset.plan;
+      if(!choices.has(key)||!pricing)return;
+      pricing.dataset.activePlan=key;
+      root.dataset.selectedPlan=key;
+      // The original script independently handles aria-pressed, price text,
+      // plan description, and the booking-guide dialog.
+    });
+  });
   if(pricing)pricing.dataset.activePlan="trial";
   const obs=("IntersectionObserver" in window&&!wantsReduced())?new IntersectionObserver(entries=>{
     for(const entry of entries){
