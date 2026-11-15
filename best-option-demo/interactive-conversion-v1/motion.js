@@ -112,7 +112,7 @@
     if(reduced.matches){document.getElementById("motion-review").scrollIntoView();return;}
     stopPlayback();
     const from=getProgress(),to=from>.8?0:.96;
-    const initial=window.scrollY,final=targetY(to),duration=2500;
+    const initial=window.scrollY,final=targetY(to),duration=1650;
     playing=true;
     let begin=null;
     function frame(time){
@@ -120,7 +120,7 @@
       if(begin===null)begin=time;
       const t=clamp((time-begin)/duration);
       window.scrollTo(0,lerp(initial,final,t*t*(3-2*t)));
-      if(t<1)playFrame=requestAnimationFrame(frame);else stopPlayback();
+      if(t<1){playFrame=requestAnimationFrame(frame);}else{window.scrollTo(0,final);stopPlayback();root.dataset.morphPlayFinished="true";}
     }
     playFrame=requestAnimationFrame(frame);
   }
