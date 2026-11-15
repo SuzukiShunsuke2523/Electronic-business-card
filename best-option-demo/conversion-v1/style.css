@@ -1,0 +1,274 @@
+@charset "utf-8";
+:root{--ink:#233e33;--accent:#3d644f;--accent-dark:#234934;--sage:#e6eee4;--sage2:#dae6d8;--paper:#f8f7f0;--white:#fffefa;--warm:#a87657;--soft-text:#607368;--border:#d6dfd4;--width:1200px;--ease:cubic-bezier(.22,1,.36,1);font-synthesis:none}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:100px}
+body{margin:0;color:var(--ink);background:var(--paper);font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,system-ui,sans-serif;line-height:1.8;-webkit-font-smoothing:antialiased;overflow-x:clip}
+button,input{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}img{max-width:100%;display:block}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--warm);outline-offset:4px}
+.skip-link{position:absolute;z-index:200;left:20px;top:-100px;padding:10px 20px;background:white;color:var(--ink)}
+.skip-link:focus{top:10px}
+.sample-ribbon{background:#e4ebdd;color:#47644d;text-align:center;padding:8px 16px;font-size:11px;letter-spacing:.025em;line-height:1.6}
+.section-width{width:min(calc(100% - 64px),var(--width));margin:0 auto}
+.site-header{position:sticky;top:0;z-index:80;background:rgba(248,247,240,.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.header-inner{max-width:1350px;margin:0 auto;padding:0 30px;min-height:84px;display:flex;align-items:center;gap:32px;justify-content:space-between}
+.brand{display:inline-flex;align-items:center;gap:11px;font:600 24px/1 Georgia,"Yu Mincho",serif;letter-spacing:.13em;white-space:nowrap}
+.brand small{display:block;font:600 8px/1.4 system-ui,sans-serif;letter-spacing:.28em;color:#8a9b8d;margin-top:7px}
+.brand-icon{width:35px;height:35px;display:grid;place-items:center;border:1px solid #92aa91;border-radius:50%;font:26px Georgia,serif;color:#63806b;flex:none}
+.desktop-nav{display:flex;align-items:center;gap:clamp(15px,2.7vw,35px);font-size:12px;font-weight:600;color:#506b5b;white-space:nowrap}
+.desktop-nav a{transition:color .2s}.desktop-nav a:hover{color:#a16d50}
+.header-cta{padding:12px 16px;border:1px solid #6b9377;border-radius:3px;font-size:12px;font-weight:700;color:#285237;display:flex;align-items:center;gap:18px;white-space:nowrap;transition:background .2s}
+.header-cta:hover{background:#e6eee5}.header-cta span{font-size:19px}
+.hero{position:relative;padding:46px 30px 0;background:linear-gradient(145deg,#faf9f3,#eaf0e6)}
+.hero-content{max-width:1340px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);align-items:center;gap:clamp(30px,4.4vw,75px);min-height:550px}
+.hero-copy{padding:36px 0 48px}
+.eyebrow{display:inline-flex;align-items:center;gap:13px;font-size:11px;color:var(--warm);font-weight:800;letter-spacing:.19em;line-height:1.7}
+.eyebrow-dash{height:1px;width:32px;background:#a77962;display:inline-block}
+.hero-label{font-size:13px;color:#55745c;letter-spacing:.02em;margin:26px 0 8px;font-weight:700;line-height:1.85}
+.small-demo{font-size:10px;color:#829083;white-space:nowrap}
+.hero h1{font:500 clamp(40px,4.2vw,69px)/1.5 "Yu Mincho","Hiragino Mincho ProN",serif;letter-spacing:-.03em;margin:9px 0 18px;color:#254839;white-space:nowrap}
+.hero h1 em{font-style:normal;color:#759a7c}
+.hero-description{font-size:15px;color:#64786b;line-height:2.15;max-width:565px;margin:0}
+.hero-cta-row{display:flex;align-items:center;gap:25px;flex-wrap:wrap;margin-top:31px}
+.btn{border:0;display:inline-flex;align-items:center;justify-content:space-between;gap:16px;padding:15px 22px;min-height:54px;font-size:13px;line-height:1.5;font-weight:800;border-radius:3px;transition:transform .2s,background .2s,box-shadow .2s;cursor:pointer}
+.btn span{font-size:19px;font-weight:500}
+.btn-primary{background:#355d45;color:#fffefa;box-shadow:0 6px 20px #214e3916}
+.btn-primary:hover{background:#497359;transform:translateY(-2px);box-shadow:0 12px 27px #214e392b}
+.quiet-link{border-bottom:1px solid #9aac9b;padding-bottom:7px;color:#436a50;font-weight:700;font-size:12px;white-space:nowrap}
+.quiet-link span{margin-left:10px}
+.hero-price{border-top:1px solid #d5dfd4;padding-top:23px;margin-top:45px;display:flex;align-items:center;flex-wrap:wrap;gap:15px;color:#41614c;font-size:14px}
+.price-bubble{font:800 9px system-ui,sans-serif;letter-spacing:.15em;border:1px solid #aac2ad;padding:7px 9px}
+.hero-price strong{font:500 32px Georgia,serif;vertical-align:middle;color:#254b37;margin-left:6px}
+.hero-price small{font-size:12px;color:#718576}
+.hero-micro{font-size:10px;color:#849488;margin:7px 0 0}
+.hero-media{position:relative;align-self:stretch;min-height:540px;overflow:hidden;border-radius:180px 180px 0 0;background:#c7d5c7}
+.hero-media img{position:absolute;inset:0;height:100%;width:100%;object-fit:cover;object-position:52% center;filter:saturate(.79) contrast(.97);transition:transform 2s var(--ease)}
+.hero-media:hover img{transform:scale(1.035)}
+.hero-media .image-wash{pointer-events:none;position:absolute;inset:0;background:linear-gradient(180deg,#55795b02 55%,#122f224e 100%)}
+.hero-image-stamp{position:absolute;bottom:40px;left:30px;color:#fffdf4;display:flex;gap:14px;align-items:center;text-shadow:0 1px 10px #10221b80}
+.hero-image-stamp span{font:800 10px system-ui,sans-serif;letter-spacing:.24em;border:1px solid #f5fbe6bd;padding:10px}
+.hero-image-stamp b{font:italic 24px/1.1 Georgia,serif}
+.photo-credit{position:absolute;right:18px;top:28px;background:#fffbe9c7;color:#315e42;border-radius:99px;padding:7px 12px;font:800 9px system-ui,sans-serif;letter-spacing:.08em}
+.hero-bottom-line{max-width:1340px;margin:0 auto;height:68px;display:flex;align-items:center;justify-content:space-between;gap:15px;color:#64856d;font:700 10px system-ui,sans-serif;letter-spacing:.15em}
+.hero-bottom-line a span{margin-left:12px}
+.promise-section{background:#fffefa;padding:105px 0 108px}
+.section-intro{max-width:790px;margin:0 0 45px}
+.section-intro h2,.experience-text h2,.pricing-heading h2,.first-copy h2,.faq-grid h2,.closing-inner h2{font:500 clamp(30px,3.6vw,46px)/1.56 "Yu Mincho","Hiragino Mincho ProN",serif;letter-spacing:.005em;margin:13px 0 15px}
+.section-intro p,.pricing-heading p{font-size:14px;color:var(--soft-text);line-height:1.9}
+.promise-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:19px}
+.promise-card{border:1px solid #dfe5db;background:#f8f9f3;padding:30px;min-height:280px;display:flex;flex-direction:column;border-radius:3px}
+.feature-num{font:italic 25px Georgia,serif;color:#9cae9b}
+.feature-icon{font:100 47px Georgia,serif;color:#79947d;margin:17px 0}
+.promise-card h3{font-size:17px;letter-spacing:.02em;margin:0 0 8px}
+.promise-card p{font-size:13px;line-height:1.95;color:#718074;margin:0}
+.experience-section{padding:90px 0;background:#eef2e9}
+.experience-grid{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);align-items:center;gap:clamp(38px,8vw,125px)}
+.experience-pictures{height:470px;position:relative;border-radius:180px 180px 5px 5px;overflow:hidden;background:#a6c0a9}
+.experience-pictures img{width:100%;height:100%;object-fit:cover;object-position:48% center;filter:saturate(.74)}
+.picture-badge{position:absolute;left:22px;bottom:24px;color:#fff;background:#244c35bc;border-radius:3px;padding:12px;font:800 11px/1.7 system-ui,sans-serif;letter-spacing:.15em}
+.experience-text h2{font-size:clamp(38px,4.2vw,55px)}
+.experience-text h2 em{font-style:normal;color:#819d7a}
+.experience-text p:not(.eyebrow){font-size:14px;line-height:2.2;color:#5f7466}
+.text-link{display:inline-flex;gap:38px;align-items:center;justify-content:space-between;font-size:13px;color:#3d6849;font-weight:800;border-bottom:1px solid #89a68c;padding-bottom:10px;margin-top:22px}
+.text-link span{font-size:22px}
+.pricing-section{padding:112px 0;background:#f8f7f0}
+.pricing-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;margin-bottom:30px}
+.pricing-heading h2{margin-bottom:5px}
+.pricing-heading p{margin:4px 0}
+.heading-aside{text-align:right;font-size:11px;color:#738b76;line-height:1.8;padding:0 0 9px}
+.plan-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.plan-card{border:1px solid #d1dfd1;background:#fffefa;border-radius:4px;color:#31503d;display:flex;flex-direction:column;align-items:stretch;text-align:left;min-height:316px;padding:25px;transition:transform .22s,border-color .22s,box-shadow .22s,background .22s}
+.plan-card:hover{border-color:#90aa91;transform:translateY(-3px)}
+.plan-card.is-selected{border:2px solid #52735b;background:#f3faf0;padding:24px;box-shadow:0 16px 31px #315b3816}
+.plan-label{font:800 10px system-ui,sans-serif;letter-spacing:.15em;color:#849583}
+.plan-tag{font-size:10px;align-self:flex-start;border-radius:100px;background:#e6eee2;color:#526f56;padding:4px 11px;margin:16px 0 11px}
+.plan-tag.neutral{background:#f0efe9;color:#7b8577}
+.plan-card strong{font:500 23px/1.45 "Yu Mincho","Hiragino Mincho ProN",serif}
+.plan-description{font-size:13px;color:#778878;line-height:1.9;margin:13px 0 25px}
+.plan-price{margin-top:auto;padding-top:15px;border-top:1px solid #e0e8dd;display:flex;align-items:baseline;gap:9px}
+.plan-price b{font:500 36px Georgia,serif;white-space:nowrap}
+.plan-price small{font-size:11px;color:#78877a}
+.plan-select{margin-top:10px;font-size:11px;color:#637f68;display:inline-flex;align-items:center;gap:9px}
+.select-circle{width:15px;height:15px;border-radius:50%;border:1px solid #9bad9e;display:inline-grid;place-items:center}
+.plan-card.is-selected .select-circle{background:#4c7957;border-color:#4c7957}
+.plan-card.is-selected .select-circle::before{content:"✓";color:white;font-size:10px}
+.selected-plan{margin-top:18px;background:#e5eee2;border-radius:4px;padding:26px 33px;display:flex;align-items:center;justify-content:space-between;gap:25px;min-height:155px}
+.selected-kicker{font-size:10px;font-weight:800;letter-spacing:.14em;color:#7f957f}
+.selected-summary h3{font:500 26px "Yu Mincho","Hiragino Mincho ProN",serif;margin:5px 0}
+.selected-summary p{font-size:12px;color:#667d68;margin:0;line-height:1.9;max-width:470px}
+.selected-action{text-align:right;flex:none}
+.selected-price{font:500 32px Georgia,serif;color:#284b32;margin-bottom:10px}
+.selected-price small{font:12px sans-serif;color:#738876}
+.btn-contrast{background:#2a553b;color:white}
+.btn-contrast:hover{background:#406c4a;transform:translateY(-2px)}
+.pricing-note{font-size:11px;color:#819084;margin:17px 0 0;line-height:1.8}
+.first-section{background:#eff3ed;padding:105px 0}
+.first-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.89fr);align-items:center;gap:clamp(36px,7vw,100px)}
+.first-copy>p:not(.eyebrow){font-size:14px;color:#668071;line-height:2.1}
+.flow-list{margin:35px 0}
+.flow-item{display:grid;grid-template-columns:45px 1fr;gap:13px;border-top:1px solid #cfddd0;padding:19px 0}
+.flow-item:last-child{border-bottom:1px solid #cfddd0}
+.flow-item>span{font:italic 25px Georgia,serif;color:#7f9d83}
+.flow-item h3{font-size:15px;margin:1px 0 3px}
+.flow-item p{font-size:12px;color:#718578;margin:0;line-height:1.9}
+.first-image{margin:0}
+.first-image img{object-fit:cover;width:100%;height:470px;filter:saturate(.7);border-radius:190px 190px 5px 5px}
+.first-image figcaption{font-size:10px;color:#85958a;margin:11px 0;line-height:1.7}
+.faq-section{padding:112px 0;background:#fffef9}
+.faq-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(30px,6vw,95px)}
+.faq-grid>div:first-child p:not(.eyebrow){font-size:14px;color:#708273}
+.faq-list details{border-top:1px solid #d9e2d7}
+.faq-list details:last-child{border-bottom:1px solid #d9e2d7}
+.faq-list summary{padding:21px 3px;display:flex;justify-content:space-between;align-items:center;gap:20px;cursor:pointer;list-style:none;font-size:14px;font-weight:700}
+.faq-list summary::-webkit-details-marker{display:none}
+.faq-list summary span{font-size:22px;color:#709378;transition:transform .2s}
+.faq-list details[open] summary span{transform:rotate(45deg)}
+.faq-list details p{font-size:13px;color:#637d69;line-height:2;margin:0;padding:0 8px 22px 3px}
+.closing-section{background:linear-gradient(145deg,#244633,#31533f);padding:95px 0 104px;color:#fffefa}
+.closing-inner{text-align:center}
+.closing-inner .eyebrow{color:#d2e6c9}
+.closing-inner h2{font-size:clamp(38px,4vw,54px);margin:18px 0}
+.closing-inner>p{font-size:14px;color:#dce7db;line-height:2}
+.closing-action{display:flex;gap:24px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:27px}
+.closing-action .btn-primary{background:#d8ebcb;color:#294d38}
+.closing-action .btn-primary:hover{background:white}
+.closing-action .quiet-link{color:#dcefd9;border-color:#acc2ab}
+.closing-small{font-size:11px!important;color:#bed3c0!important;margin-top:28px}
+.footer{background:#19392b;color:#d0dfd1;padding:40px 0 30px}
+.footer-inner{display:flex;justify-content:space-between;gap:30px}
+.footer-brand{font:500 22px Georgia,serif;letter-spacing:.1em}
+.footer-inner p{font-size:11px;color:#a7c1ac;line-height:1.9}
+.footer-links{display:flex;align-items:flex-start;gap:19px;flex-wrap:wrap;font-size:12px}
+.footer-links a{text-decoration:underline;text-underline-offset:4px}
+.source-note{padding-top:25px;border-top:1px solid #4c6754;font-size:11px;line-height:2;color:#a8c1ad;margin-top:25px}
+.source-note a{text-decoration:underline;text-underline-offset:3px;margin-left:7px}
+.mobile-bar{display:none}
+.booking-dialog{background:#fffefa;color:#2a4736;border:1px solid #d9e4d8;border-radius:8px;box-shadow:0 35px 110px #0c281e6e;width:min(calc(100% - 28px),505px);max-height:90vh;padding:0}
+.booking-dialog::backdrop{background:#132d22a8;backdrop-filter:blur(4px)}
+.dialog-content{padding:31px 33px 35px;position:relative;overflow:auto}
+.dialog-content h2{font:500 32px "Yu Mincho","Hiragino Mincho ProN",serif;margin:16px 0}
+.dialog-close{position:absolute;top:11px;right:17px;background:none;border:0;font-size:26px;color:#6b886d;min-width:39px;min-height:39px}
+.dialog-choice{background:#edf3e9;padding:11px 13px;font-size:13px}
+.dialog-content ol{padding-left:23px;font-size:13px;line-height:2.1;color:#5c7762}
+.dialog-content li{margin:10px 0}
+.dialog-warning{background:#f6efe8;color:#7f5c48;padding:13px;font-size:12px;line-height:1.8}
+.dialog-finish{margin-top:10px}
+.js-motion .reveal:not(.is-visible){opacity:0;transform:translateY(18px)}
+.js-motion .reveal{transition:opacity .62s var(--ease),transform .62s var(--ease);transition-delay:var(--delay,0ms)}
+.js-motion .reveal.is-visible{opacity:1;transform:translateY(0)}
+.changed{animation:changed .36s var(--ease)}
+@keyframes changed{from{opacity:.48;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:1100px){
+ .desktop-nav{gap:15px;font-size:11px}.header-inner{gap:15px}
+ .hero h1{font-size:clamp(38px,4.4vw,53px)}
+ .hero-content{gap:30px}
+ .hero-media{min-height:520px}
+}
+@media(max-width:860px){
+ .desktop-nav{display:none}
+ .hero-content,.experience-grid,.first-grid{grid-template-columns:1fr}
+ .hero-content{gap:0}
+ .hero-copy{padding:22px 0 30px}
+ .hero h1{font-size:clamp(38px,7vw,59px)}
+ .hero-media{min-height:0;height:440px;width:100%;border-radius:210px 210px 0 0}
+ .promise-grid{grid-template-columns:1fr 1fr}
+ .promise-card{min-height:235px}
+ .experience-pictures{height:430px;max-width:600px}
+ .experience-grid{gap:40px}
+ .first-image img{height:425px}
+ .faq-grid{grid-template-columns:1fr;gap:24px}
+}
+@media(max-width:610px){
+ html{scroll-padding-top:76px}
+ body{padding-bottom:65px}
+ .sample-ribbon{font-size:9px;padding:8px 10px}
+ .section-width{width:calc(100% - 38px)}
+ .header-inner{min-height:65px;padding:0 17px}
+ .brand{font-size:20px;gap:6px}
+ .brand-icon{height:31px;width:31px;font-size:23px}
+ .brand small{font-size:7px}
+ .header-cta{padding:9px 11px;font-size:10px;gap:8px}
+ .header-cta span{font-size:14px}
+ .hero{padding:26px 18px 0}
+ .hero-copy{padding:12px 0 23px}
+ .hero-label{font-size:12px;margin:18px 0 6px}
+ .hero h1{font-size:clamp(35px,9vw,46px);margin:7px 0 15px}
+ .hero-description{font-size:13px;line-height:2}
+ .hero-cta-row{margin-top:24px;gap:16px}
+ .hero-cta-row .btn{width:100%;justify-content:space-between}
+ .hero-price{margin-top:29px;padding-top:17px;gap:9px}
+ .hero-price strong{font-size:28px}
+ .hero-media{height:355px;border-radius:180px 180px 0 0}
+ .hero-image-stamp{left:18px;bottom:22px}
+ .hero-image-stamp span{font-size:8px;padding:8px}
+ .hero-image-stamp b{font-size:18px}
+ .photo-credit{font-size:8px;right:13px;top:20px}
+ .hero-bottom-line{height:54px;font-size:8px}
+ .hero-bottom-line>span{display:none}
+ .promise-section,.experience-section,.pricing-section,.first-section,.faq-section{padding:70px 0}
+ .section-intro{margin-bottom:30px}
+ .section-intro h2,.experience-text h2,.pricing-heading h2,.first-copy h2,.faq-grid h2{font-size:clamp(30px,8vw,37px)}
+ .section-intro p{font-size:13px}
+ .promise-grid{grid-template-columns:1fr;gap:11px}
+ .promise-card{min-height:0;padding:21px}
+ .feature-icon{font-size:35px;margin:12px 0}
+ .promise-card h3{font-size:16px}
+ .promise-card p{font-size:12px}
+ .experience-grid{gap:34px}
+ .experience-pictures{height:345px}
+ .experience-text p:not(.eyebrow){font-size:13px}
+ .pricing-heading{display:block;margin-bottom:25px}
+ .heading-aside{text-align:left}
+ .plan-grid{grid-template-columns:1fr;gap:11px}
+ .plan-card{min-height:150px;padding:19px!important;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px 8px}
+ .plan-label{grid-column:1;grid-row:1}
+ .plan-tag{grid-column:2;grid-row:1;margin:0;justify-self:end}
+ .plan-card strong{grid-column:1;grid-row:2;font-size:20px}
+ .plan-description{grid-column:1;grid-row:3;font-size:12px;margin:0}
+ .plan-price{grid-column:2;grid-row:2/4;border:0;padding:0;margin:0;display:flex;flex-direction:column;align-items:end;gap:2px}
+ .plan-price b{font-size:25px}
+ .plan-price small{font-size:10px;text-align:right}
+ .plan-select{grid-column:1/-1;border-top:1px solid #e4ebe3;padding-top:9px;margin-top:5px}
+ .selected-plan{margin-top:12px;padding:22px 19px;display:block}
+ .selected-summary h3{font-size:23px}
+ .selected-price{font-size:27px;margin-top:13px}
+ .selected-action{text-align:left}
+ .selected-action .btn{width:100%;font-size:12px}
+ .pricing-note{font-size:10px}
+ .first-grid{gap:32px}
+ .first-image img{height:355px}
+ .flow-list{margin:28px 0}
+ .faq-grid h2{margin-top:10px}
+ .faq-list summary{font-size:13px;padding:17px 3px}
+ .faq-list details p{font-size:12px}
+ .closing-section{padding:78px 0 82px}
+ .closing-inner h2{font-size:36px}
+ .closing-inner>p{font-size:12px}
+ .closing-action .btn{width:100%}
+ .footer{padding:35px 0}
+ .footer-inner{display:block}
+ .footer-links{margin-top:25px}
+ .footer-brand{font-size:20px}
+ .source-note{font-size:10px}
+ .mobile-bar{position:fixed;bottom:0;left:0;right:0;z-index:75;background:#f8f8f1f0;border-top:1px solid #cbdace;padding:9px max(13px,env(safe-area-inset-left)) calc(9px + env(safe-area-inset-bottom)) max(13px,env(safe-area-inset-right));display:flex;align-items:center;justify-content:space-between;gap:13px;backdrop-filter:blur(14px);box-shadow:0 -10px 30px #284b3616}
+ .mobile-bar>div{display:grid;line-height:1.3;gap:2px}
+ .mobile-bar small{font-size:10px;color:#6f816e}
+ .mobile-bar strong{font:500 24px Georgia,serif;color:#2b553b}
+ .mobile-bar a{border-radius:3px;background:#305b40;color:white;padding:12px 14px;display:flex;justify-content:space-between;gap:13px;white-space:nowrap;font-size:12px;font-weight:800}
+ .dialog-content{padding:25px 21px}
+ .dialog-content h2{font-size:28px}
+}
+@media(max-width:360px){
+ .hero h1{font-size:32px}
+ .hero-media{height:315px}
+ .header-cta{font-size:9px}
+ .mobile-bar a{padding:10px;font-size:11px}
+ .mobile-bar strong{font-size:20px}
+ .plan-card strong{font-size:18px}
+ .plan-price b{font-size:22px}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}
+ *,*::before,*::after{animation:none!important;transition:none!important}
+ .js-motion .reveal:not(.is-visible){opacity:1;transform:none}
+ .plan-card:hover,.btn:hover,.hero-media:hover img{transform:none}
+}
