@@ -67,6 +67,18 @@ pre{font:11px/1.5 monospace;white-space:pre-wrap;overflow-wrap:anywhere}
   const faq=d.querySelector("#faq details");faq.querySelector("summary").click();
   checks.faqOpens=faq.open;
   checks.keepsThreePrices=["3,000","7,000","26,000"].every(s=>d.querySelector("#plans").textContent.includes(s));
+  if(width===1280){
+    scroll(.02);await sleep(230);
+    const player=d.getElementById("morph-play");
+    checks.hasPlayButton=!!player;
+    if(player){
+      player.click();
+      await sleep(2900);
+      notes.autoPlayProgress=d.documentElement.dataset.morphProgress;
+      notes.autoPlayPhotoB=d.documentElement.dataset.morphPhotoB;
+      checks.playButtonReachesFinal=Number(d.documentElement.dataset.morphProgress)>.93&&Number(d.documentElement.dataset.morphPhotoB)>.95;
+    }
+  }
   checks.noForms=d.querySelectorAll("form").length===0;
   checks.noRuntimeErrors=errors.length===0;
   notes.scrollWidth=d.documentElement.scrollWidth;notes.consoleErrors=errors;
