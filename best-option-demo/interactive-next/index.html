@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#082a23">
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="LUNOA PILATES JavaScriptデモの新しい演出試作。花と光がスクロールで連続して変化する、ファーストビューから第2シーンまでのレビュー版。">
+<title>LUNOA PILATES｜BREATHE / BLOOM · JavaScript演出試作</title>
+<link rel="stylesheet" href="motion.css">
+<script defer src="motion.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#review">デザイン確認へスキップ</a>
+<div class="prototype-notice"><span class="status-dot" aria-hidden="true"></span> BEST OPTION — JAVASCRIPT DEMO / <strong>第1レビュー版・未完成</strong> <span class="notice-spacer">あなたのOKをもらうまで完成にはしません。</span></div>
+
+<header class="site-header" id="siteHeader">
+  <a class="identity" href="#top" aria-label="LUNOA PILATES 最初に戻る">
+    <span class="identity-icon" aria-hidden="true">✳</span>
+    <span class="identity-word">LUNOA<small>PILATES · STUDIO CONCEPT</small></span>
+  </a>
+  <nav aria-label="ページ内メニュー">
+    <a href="#top">EXPERIENCE</a>
+    <a href="#review">REVIEW POINT</a>
+  </nav>
+  <a class="header-review" href="#review">レビュー箇所を見る <span aria-hidden="true">↗</span></a>
+</header>
+
+<main>
+<section class="journey" id="top" aria-label="呼吸から生まれるスクロール演出">
+ <div class="stage" id="stage">
+  <div class="dark-sky" aria-hidden="true"></div>
+  <div class="light-sky" aria-hidden="true"></div>
+  <div class="light-grain" aria-hidden="true"></div>
+  <div class="glow-a" aria-hidden="true"></div>
+  <div class="glow-b" aria-hidden="true"></div>
+
+  <div class="flower-system" id="flowerSystem" aria-hidden="true">
+    <div class="flower-halo halo-outer"></div>
+    <div class="flower-halo halo-inner"></div>
+    <svg class="flower-svg" viewBox="0 0 600 600" focusable="false" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="petalFill" cx=".36" cy=".21" r=".93">
+          <stop offset="0" stop-color="#fffff2"/>
+          <stop offset=".24" stop-color="#e4ffc2"/>
+          <stop offset=".53" stop-color="#b6dfaf"/>
+          <stop offset=".8" stop-color="#638f7b"/>
+          <stop offset="1" stop-color="#305c50"/>
+        </radialGradient>
+        <linearGradient id="petalStroke" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#efffd8" stop-opacity=".9"/>
+          <stop offset=".5" stop-color="#e8f9cf" stop-opacity=".3"/>
+          <stop offset="1" stop-color="#436c59" stop-opacity=".2"/>
+        </linearGradient>
+        <radialGradient id="coreFill" cx=".35" cy=".26" r=".8">
+          <stop offset="0" stop-color="#ffffe1"/>
+          <stop offset=".55" stop-color="#e7e2b6"/>
+          <stop offset="1" stop-color="#7c9d82"/>
+        </radialGradient>
+        <filter id="petalShadow" x="-45%" y="-45%" width="190%" height="190%">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="8" result="blur"/>
+          <feOffset dy="10" result="offset"/>
+          <feComponentTransfer in="offset" result="shade"><feFuncA type="linear" slope=".17"/></feComponentTransfer>
+          <feMerge><feMergeNode in="shade"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <g class="petals-back" opacity=".63" transform="rotate(22.5 300 300)">
+        <path d="M300 310 C257 287 231 231 244 155 C255 93 280 66 300 58 C320 66 345 93 356 155 C369 231 343 287 300 310 Z" transform="rotate(0 300 300)"/>
+        <path d="M300 310 C257 287 231 231 244 155 C255 93 280 66 300 58 C320 66 345 93 356 155 C369 231 343 287 300 310 Z" transform="rotate(45 300 300)"/>
+        <path d="M300 310 C257 287 231 231 244 155 C255 93 280 66 300 58 C320 66 345 93 356 155 C369 231 343 287 300 310 Z" transform="rotate(90 300 300)"/>
+        <path d="M300 310 C257 287 231 231 244 155 C255 93 280 66 300 58 C320 66 345 93 356 155 C369 231 343 287 300 310 Z" transform="rotate(135 300 300)"/>
+        <path d="M300 310 C257 287 231 231 244 155 C255 93 280 66 300 58 C320 66 345 93 356 155 C369 231 343 287 300 310 Z" transform="rotate(180 300 300)"/>
+        <path d="M300 310 C257 287 231 231 244 155 C255 93 280 66 300 58 C320 66 345 93 356 155 C369 231 343 287 300 310 Z" transform="rotate(225 300 300)"/>
+        <path d="M300 310 C257 287 231 231 244 155 C255 93 280 66 300 58 C320 66 345 93 356 155 C369 231 343 287 300 310 Z" transform="rotate(270 300 300)"/>
+        <path d="M300 310 C257 287 231 231 244 155 C255 93 280 66 300 58 C320 66 345 93 356 155 C369 231 343 287 300 310 Z" transform="rotate(315 300 300)"/>
+      </g>
+      <g class="petals-front" filter="url(#petalShadow)">
+        <path d="M300 302 C261 275 250 225 259 168 C265 121 283 86 300 73 C317 86 335 121 341 168 C350 225 339 275 300 302 Z" transform="rotate(0 300 300)"/>
+        <path d="M300 302 C261 275 250 225 259 168 C265 121 283 86 300 73 C317 86 335 121 341 168 C350 225 339 275 300 302 Z" transform="rotate(45 300 300)"/>
+        <path d="M300 302 C261 275 250 225 259 168 C265 121 283 86 300 73 C317 86 335 121 341 168 C350 225 339 275 300 302 Z" transform="rotate(90 300 300)"/>
+        <path d="M300 302 C261 275 250 225 259 168 C265 121 283 86 300 73 C317 86 335 121 341 168 C350 225 339 275 300 302 Z" transform="rotate(135 300 300)"/>
+        <path d="M300 302 C261 275 250 225 259 168 C265 121 283 86 300 73 C317 86 335 121 341 168 C350 225 339 275 300 302 Z" transform="rotate(180 300 300)"/>
+        <path d="M300 302 C261 275 250 225 259 168 C265 121 283 86 300 73 C317 86 335 121 341 168 C350 225 339 275 300 302 Z" transform="rotate(225 300 300)"/>
+        <path d="M300 302 C261 275 250 225 259 168 C265 121 283 86 300 73 C317 86 335 121 341 168 C350 225 339 275 300 302 Z" transform="rotate(270 300 300)"/>
+        <path d="M300 302 C261 275 250 225 259 168 C265 121 283 86 300 73 C317 86 335 121 341 168 C350 225 339 275 300 302 Z" transform="rotate(315 300 300)"/>
+      </g>
+      <g class="flower-center">
+        <circle cx="300" cy="300" r="55" fill="url(#coreFill)" stroke="#eff9d1" stroke-width="6"/>
+        <circle cx="300" cy="300" r="41" fill="none" stroke="#f8ffec" stroke-width="1" opacity=".66"/>
+        <circle cx="300" cy="300" r="12" fill="#f9ffe1"/>
+        <circle cx="300" cy="300" r="3" fill="#6e947b"/>
+      </g>
+    </svg>
+    <span class="flower-coordinate top">42° / BREATH</span>
+    <span class="flower-coordinate bottom">EVERYTHING BEGINS WITH ONE BREATH</span>
+  </div>
+
+  <div class="hero-copy" id="heroCopy">
+    <div class="hero-eyebrow entrance"><span class="eyebrow-line"></span> A NEW WAY TO FEEL / LUNOA</div>
+    <h1 aria-label="呼吸が、世界をひらく。">
+      <span class="headline-mask"><span class="headline-inner">呼吸が、</span></span>
+      <span class="headline-mask"><span class="headline-inner">世界を</span></span>
+      <span class="headline-mask"><span class="headline-inner accent">ひらく。</span></span>
+    </h1>
+    <p class="hero-lead entrance">深く息を吸う。そのたびに、<br>心と身体が軽くなるような時間を。</p>
+    <div class="hero-note entrance"><span class="small-orbit" aria-hidden="true">✳</span><span>PRIVATE PILATES STUDIO<br><strong>WEB MOTION CONCEPT</strong></span></div>
+  </div>
+
+  <div class="portal-copy" id="portalCopy" aria-hidden="true">
+    <span class="portal-kicker">INHALE · EXHALE</span>
+    <span class="portal-main">BLOOM</span>
+    <span class="portal-sub">その一呼吸から、次の世界へ。</span>
+  </div>
+
+  <div class="arrival-copy" id="arrivalCopy">
+    <div class="arrival-content">
+      <span class="arrival-eyebrow"><span class="mini-star">✳</span> A SOFTER KIND OF STRENGTH</span>
+      <h2>わたしらしい<br><em>リズム</em>で、<br>明日へ。</h2>
+      <p>身体と向き合う時間が、日々を少しずつ変えていく。<br>一つの花から、ページ全体へ広がる連続した体験。</p>
+      <a class="arrival-link" href="#review">この演出の確認ポイントへ <span aria-hidden="true">↗</span></a>
+    </div>
+  </div>
+
+  <div class="stage-meta"><span id="stageLabel">01 — BREATHE</span><span>SCROLL · INTERACTIVE STORY</span></div>
+
+  <nav class="phase-navigation" aria-label="演出シーンへ移動">
+    <button type="button" data-seek="0" class="phase-button is-current" aria-current="step"><span class="phase-number">01</span><span class="phase-name">BREATHE</span></button>
+    <button type="button" data-seek="0.43" class="phase-button"><span class="phase-number">02</span><span class="phase-name">BLOOM</span></button>
+    <button type="button" data-seek="0.94" class="phase-button"><span class="phase-number">03</span><span class="phase-name">BEYOND</span></button>
+  </nav>
+
+  <div class="scroll-cue" id="scrollCue" aria-hidden="true"><span>SCROLL TO BLOOM</span><span class="scroll-cue-line"></span><span class="cue-arrow">↓</span></div>
+  <div class="progress-track" aria-hidden="true"><span id="journeyProgress"></span></div>
+  <span class="sr-only" aria-live="polite" id="phaseAnnouncement">Scene 1 呼吸</span>
+ </div>
+</section>
+
+<section class="review-section" id="review">
+ <div class="review-ornament" aria-hidden="true">✳</div>
+ <div class="review-inner">
+   <p class="review-eyebrow">REVIEW CHECKPOINT / 01</p>
+   <h2>まずは、ここまで。<br><em>この体験をどう感じた？</em></h2>
+   <p>ファーストビューから最初のスクロール演出までを制作した、JavaScript版の新しい試作です。まだサイト全体は作り込んでいません。あなたの感想をもとに、次のシーン・料金・サービス紹介を仕上げます。</p>
+   <div class="review-details">
+     <div><span>01</span><strong>FIRST IMPRESSION</strong><small>開いた瞬間の驚き</small></div>
+     <div><span>02</span><strong>SCROLL STORY</strong><small>一体感のある画面変化</small></div>
+     <div><span>03</span><strong>PHONE EXPERIENCE</strong><small>スマホでも楽しめるか</small></div>
+   </div>
+   <div class="review-actions">
+     <a href="#top" class="review-primary">もう一度体験する <span aria-hidden="true">↗</span></a>
+     <a href="../interactive-v3/" class="review-secondary">旧JavaScript v3と比較する <span aria-hidden="true">→</span></a>
+   </div>
+   <p class="review-disclaimer">※ LUNOA PILATESは架空のブランドです。これは公開レビュー用の試作であり、ユーザー承認前の未完成デモです。</p>
+ </div>
+</section>
+</main>
+<footer><span>© BEST OPTION / LUNOA — MOTION DESIGN REVIEW</span><a href="../">5つのデモ構成へ戻る</a><span>PROTOTYPE · NOT APPROVED</span></footer>
+</body>
+</html>
