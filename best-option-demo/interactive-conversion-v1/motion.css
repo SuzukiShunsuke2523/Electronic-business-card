@@ -1,0 +1,148 @@
+@charset "utf-8";
+/* BEST OPTION — conversion-first JavaScript prototype. The conversion-v1
+   typography, content, prices, FAQ and layout are inherited without alteration. */
+:root{--motion-forest:#163d2a;--motion-lime:#def1c8;--motion-cream:#f7f5eb}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.motion-rebuild .sample-ribbon{background:#dceadd;color:#325841;font-size:10px;font-weight:700}
+.motion-rebuild .site-header{background:#fbfaf5ec}
+.motion-rebuild .hero{overflow:hidden;isolation:isolate}
+.motion-rebuild .hero-content{min-height:600px}
+.motion-rebuild .hero-copy{z-index:2;position:relative}
+.motion-rebuild .hero h1{font-size:clamp(44px,4.65vw,77px);line-height:1.43}
+.hero-clip{display:block;overflow:hidden;padding-bottom:.05em;margin-bottom:-.05em}
+.hero-clip>span{display:block}
+.motion-live .hero-clip>span{animation:motionHeadlineRise 1.0s both cubic-bezier(.16,1,.3,1)}
+.motion-live .hero-clip:nth-child(2)>span{animation-delay:.13s}
+@keyframes motionHeadlineRise{from{transform:translateY(120%) rotate(3deg);opacity:.35}to{transform:translateY(0) rotate(0);opacity:1}}
+.motion-live .hero-label,.motion-live .hero-description,.motion-live .hero-cta-row,.motion-live .hero-price{animation:motionAppear .75s both cubic-bezier(.16,1,.3,1)}
+.motion-live .hero-label{animation-delay:.15s}
+.motion-live .hero-description{animation-delay:.35s}
+.motion-live .hero-cta-row{animation-delay:.49s}
+.motion-live .hero-price{animation-delay:.62s}
+@keyframes motionAppear{from{transform:translateY(26px);opacity:0}to{transform:translateY(0);opacity:1}}
+.motion-rebuild .motion-go-link{color:#2c6e43;font-size:12px}
+.motion-rebuild .motion-hero-photo{box-shadow:0 26px 70px #2f553920}
+.motion-live .motion-hero-photo{animation:motionPhotoEnter 1.25s .1s both cubic-bezier(.16,1,.3,1)}
+@keyframes motionPhotoEnter{from{clip-path:inset(0 95% 0 0 round 180px 180px 0 0);opacity:.7}to{clip-path:inset(0 0 0 0 round 180px 180px 0 0);opacity:1}}
+.motion-rebuild .motion-hero-photo img{transform:scale(1.065) translateY(var(--hero-parallax,0px));transition:transform .6s linear;will-change:transform}
+.hero-frame-line{position:absolute;inset:16px;border:1px solid #ffffff5c;border-radius:175px 175px 0 0;pointer-events:none}
+.morph-story{position:relative;height:325svh;background:#e9eee6}
+.morph-sticky{--morph-light-opacity:0;--morph-frame-radius:190px 190px 10px 10px;--morph-frame-width:40vw;--morph-frame-height:69vh;--morph-frame-x:72%;--morph-frame-y:50%;--morph-photo-b-opacity:0;--morph-intro-opacity:1;--morph-wide-opacity:0;--morph-finale-opacity:0;--morph-img-scale:1.04;--morph-frame-dark:.15;position:sticky;top:83px;height:calc(100svh - 83px);min-height:480px;overflow:hidden;isolation:isolate;background:#edf1e8}
+.morph-surface{position:absolute;inset:0;background:linear-gradient(145deg,#e5ece3,#f9f8ed);z-index:-3}
+.morph-surface:after{content:"";inset:0;position:absolute;opacity:var(--morph-light-opacity);background:linear-gradient(135deg,#1d4731,#0c2920);will-change:opacity}
+.morph-decoration{position:absolute;left:-.05em;bottom:-.19em;color:transparent;-webkit-text-stroke:1px #77998135;z-index:1;pointer-events:none;font:700 clamp(190px,29vw,470px)/1 Georgia,serif;letter-spacing:-.065em;opacity:var(--morph-intro-opacity)}
+.morph-image-frame{position:absolute;z-index:2;left:var(--morph-frame-x);top:var(--morph-frame-y);transform:translate(-50%,-50%);width:var(--morph-frame-width);height:var(--morph-frame-height);overflow:hidden;border-radius:var(--morph-frame-radius);box-shadow:0 38px 86px #19352440;will-change:width,height,left,top,border-radius}
+.morph-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:51% center;transform:scale(var(--morph-img-scale));filter:saturate(.78) contrast(1.02);pointer-events:none}
+.morph-image-second{opacity:var(--morph-photo-b-opacity);object-position:48% center}
+.morph-image-tint{position:absolute;inset:0;background:linear-gradient(180deg,#08241b18 10%,#06241c16 42%,#061e18b5 100%);opacity:var(--morph-frame-dark);pointer-events:none}
+.morph-photo-label{position:absolute;top:28px;right:29px;color:#fffefa;font:700 10px system-ui,sans-serif;letter-spacing:.2em;text-shadow:0 1px 10px #172c20;opacity:var(--morph-wide-opacity)}
+.morph-intro-copy,.morph-wide-copy,.morph-finale-copy{position:absolute;z-index:5;will-change:opacity,transform;pointer-events:none}
+.morph-intro-copy{top:50%;left:clamp(24px,8vw,145px);width:min(42vw,610px);transform:translateY(-50%);opacity:var(--morph-intro-opacity)}
+.morph-kicker{font-size:10px;font-weight:800;letter-spacing:.19em;color:#8a674f;display:inline-flex;align-items:center;gap:11px}
+.morph-kicker-line{width:34px;height:1px;background:#96725c}
+.morph-intro-copy h2{font:500 clamp(49px,5.5vw,84px)/1.43 "Yu Mincho","Hiragino Mincho ProN",serif;letter-spacing:-.05em;color:#294734;margin:20px 0}
+.morph-intro-copy h2 em{font-style:normal;color:#7e9d82}
+.morph-intro-copy p{font-size:14px;color:#58705e;line-height:2.15}
+.morph-wide-copy,.morph-finale-copy{inset:0;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:0 clamp(24px,11vw,175px);color:#fffef9;text-shadow:0 3px 35px #0b241b7a}
+.morph-wide-copy{opacity:var(--morph-wide-opacity)}
+.morph-finale-copy{opacity:var(--morph-finale-opacity)}
+.morph-kicker.light{color:#f1ffe9;text-shadow:0 1px 10px #193121}
+.morph-wide-copy h2,.morph-finale-copy h2{font:500 clamp(52px,8vw,125px)/1.32 "Yu Mincho","Hiragino Mincho ProN",serif;letter-spacing:-.06em;margin:24px 0}
+.morph-wide-copy h2 em,.morph-finale-copy h2 em{font-style:normal;color:#d8f5bd}
+.morph-wide-copy p,.morph-finale-copy p{font-size:12px;letter-spacing:.15em;color:#e4f4db}
+.morph-progress{position:absolute;z-index:12;left:0;right:0;bottom:0;height:5px;background:#acc3b250}
+.morph-progress span{height:100%;display:block;width:0;background:#d9ffb3;box-shadow:0 0 17px #d9ffb380}
+.morph-controls{position:absolute;z-index:15;bottom:26px;right:clamp(20px,4vw,55px);display:flex;gap:7px;background:#173d31bd;padding:7px;border:1px solid #d9eac659;backdrop-filter:blur(15px);border-radius:999px}
+.morph-phase{border:0;border-radius:999px;background:none;padding:11px 16px;color:#e4f0de;font-size:11px;line-height:1.3;font-weight:800;letter-spacing:.03em;white-space:nowrap;transition:background .2s,color .2s}
+.morph-phase span{font-size:10px;font-weight:500;opacity:.86;margin-left:5px}
+.morph-phase.is-active{background:#dff2cf;color:#25513a}
+.morph-phase:hover:not(.is-active){background:#ffffff26}
+.morph-counter{position:absolute;z-index:12;left:clamp(20px,4vw,60px);bottom:31px;font:italic 34px Georgia,serif;color:#2c4c35;opacity:.85;transition:color .2s}
+.morph-sticky.is-full .morph-counter{color:#f1fff0}
+.morph-scroll-hint{position:absolute;z-index:12;top:29px;left:clamp(20px,4vw,60px);font:800 10px system-ui,sans-serif;letter-spacing:.2em;color:#50765c}
+.morph-sticky.is-full .morph-scroll-hint{color:#edf7e9}
+.morph-rebuild .promise-section{scroll-margin-top:83px}
+.motion-rebuild .promise-card.reveal{transform-origin:50% 100%}
+.motion-rebuild.js-motion .promise-card.reveal:not(.is-visible){transform:perspective(850px) rotateX(13deg) translateY(55px);opacity:0}
+.motion-rebuild.js-motion .promise-card.reveal.is-visible{transform:perspective(850px) rotateX(0) translateY(0);opacity:1}
+.motion-rebuild .promise-card{transition:transform .45s var(--ease),box-shadow .3s,border-color .3s}
+.motion-rebuild .promise-card:hover{transform:translateY(-11px)!important;border-color:#9cbc9f;box-shadow:0 18px 36px #285e3930}
+.motion-rebuild .experience-pictures{overflow:hidden}
+.motion-rebuild .experience-pictures img{transform:scale(1.09);transition:transform 1.3s var(--ease)}
+.motion-rebuild .experience-pictures.is-visible img{transform:scale(1)}
+.motion-rebuild .plan-card{position:relative;isolation:isolate;overflow:hidden;transition:transform .34s var(--ease),border-color .25s,background .25s,box-shadow .3s}
+.motion-rebuild .plan-card.is-selected{transform:translateY(-10px);box-shadow:0 22px 44px #315b3828!important}
+.motion-rebuild .plan-card.is-selected:before{content:"";position:absolute;inset:-90%;pointer-events:none;background:linear-gradient(117deg,transparent 43%,#d1eac329 50%,transparent 57%);animation:cardSweep .8s ease both;z-index:-1}
+@keyframes cardSweep{from{transform:translateX(-25%)}to{transform:translateX(27%)}}
+.motion-rebuild .selected-plan{transition:background .4s,border-color .4s}
+.motion-rebuild .pricing-section[data-active-plan="trial"] .selected-plan{background:#e3efe0}
+.motion-rebuild .pricing-section[data-active-plan="single"] .selected-plan{background:#e4eaf2}
+.motion-rebuild .pricing-section[data-active-plan="ticket"] .selected-plan{background:#eee2d8}
+.motion-rebuild .pricing-section[data-active-plan="ticket"] .plan-card.is-selected{background:#f6eee6;border-color:#8e8067}
+.motion-rebuild .pricing-section[data-active-plan="single"] .plan-card.is-selected{background:#f0f5fa;border-color:#728ca0}
+.motion-rebuild .selected-summary.changed,.motion-rebuild .selected-price.changed{animation:summaryAppear .45s var(--ease)}
+@keyframes summaryAppear{from{transform:translateY(12px);opacity:.3}to{transform:translateY(0);opacity:1}}
+.motion-rebuild .flow-item{transition:padding .25s,background .25s}
+.motion-rebuild .flow-item:hover{padding-left:14px;background:#f7faf1}
+.motion-review{padding:85px 0 95px;background:#eaf0e7}
+.motion-review h2{font:500 clamp(30px,4vw,50px)/1.55 "Yu Mincho","Hiragino Mincho ProN",serif;color:#2c543c;margin:18px 0}
+.motion-review p{max-width:730px;color:#5e7464;line-height:2.1;font-size:14px}
+.motion-review-actions{display:flex;align-items:center;gap:26px;margin-top:28px;flex-wrap:wrap}
+@media(max-width:1100px){
+ .motion-rebuild .hero h1{font-size:clamp(40px,5vw,60px)}
+ .morph-intro-copy h2{font-size:clamp(42px,5vw,67px)}
+}
+@media(max-width:860px){
+ .motion-rebuild .hero h1{font-size:clamp(38px,7vw,59px)}
+ .morph-sticky{top:65px;height:calc(100svh - 65px)}
+ .morph-intro-copy{left:28px;width:49vw}
+ .morph-wide-copy,.morph-finale-copy{padding:0 7vw}
+ .morph-wide-copy h2,.morph-finale-copy h2{font-size:clamp(49px,8vw,82px)}
+}
+@media(max-width:610px){
+ .motion-rebuild .hero h1{font-size:clamp(34px,9.1vw,45px)}
+ .motion-rebuild .hero-cta-row{display:grid;gap:16px}
+ .motion-rebuild .motion-go-link{display:inline-block;justify-self:start}
+ .morph-story{height:290svh}
+ .morph-sticky{min-height:460px}
+ .morph-decoration{font-size:190px;bottom:20px}
+ .morph-intro-copy{top:14%;left:20px;transform:none;width:calc(100% - 40px)}
+ .morph-intro-copy h2{font-size:clamp(36px,8.5vw,48px);margin:12px 0}
+ .morph-intro-copy p{font-size:11px;line-height:1.7}
+ .morph-kicker{font-size:8px}
+ .morph-image-frame{box-shadow:0 18px 55px #1c3e303b}
+ .morph-wide-copy,.morph-finale-copy{padding:0 23px}
+ .morph-wide-copy h2,.morph-finale-copy h2{font-size:clamp(38px,9vw,60px)}
+ .morph-wide-copy p,.morph-finale-copy p{font-size:9px}
+ .morph-controls{left:10px;right:10px;bottom:18px;justify-content:center;gap:3px;padding:5px}
+ .morph-phase{flex:1;padding:10px 7px;font-size:10px}
+ .morph-phase span{display:block;font-size:9px;margin:3px 0 0}
+ .morph-counter{left:15px;bottom:88px;font-size:27px}
+ .morph-scroll-hint{left:18px;top:19px;font-size:8px}
+ .morph-photo-label{font-size:8px;right:13px;top:14px}
+ .motion-rebuild .plan-card.is-selected{transform:none}
+ .motion-review{padding:66px 0 70px}
+ .motion-review p{font-size:12px}
+ .motion-review-actions{display:grid;gap:22px}
+ .motion-review-actions .btn{width:100%}
+}
+@media(max-width:360px){
+ .morph-sticky{min-height:430px}
+ .morph-intro-copy h2{font-size:34px}
+ .morph-wide-copy h2,.morph-finale-copy h2{font-size:35px}
+ .morph-phase{font-size:9px}
+ .morph-phase span{font-size:8px}
+}
+@media(prefers-reduced-motion:reduce){
+ .motion-rebuild,.motion-rebuild *{scroll-behavior:auto!important}
+ .motion-rebuild .morph-story{height:100svh}
+ .motion-rebuild .morph-sticky{position:relative;top:0;height:100svh}
+ .motion-rebuild .morph-image-frame{left:70%;top:50%;width:35vw;height:65vh;border-radius:200px 200px 8px 8px}
+ .motion-rebuild .morph-wide-copy,.motion-rebuild .morph-finale-copy,.motion-rebuild .morph-controls,.motion-rebuild .morph-progress{display:none!important}
+ .motion-rebuild .morph-intro-copy{opacity:1!important}
+ .motion-rebuild .morph-image-second{opacity:0!important}
+ .motion-rebuild .morph-image-frame,.motion-rebuild .hero-media,.motion-rebuild .hero-clip>span{animation:none!important;transition:none!important;transform:none!important}
+ .motion-rebuild .morph-image-frame{transform:translate(-50%,-50%)!important}
+ .motion-rebuild .hero-clip>span,.motion-rebuild .hero-label,.motion-rebuild .hero-description,.motion-rebuild .hero-cta-row,.motion-rebuild .hero-price{animation:none!important;opacity:1!important;transform:none!important}
+ .motion-rebuild .plan-card.is-selected:before{animation:none!important}
+}

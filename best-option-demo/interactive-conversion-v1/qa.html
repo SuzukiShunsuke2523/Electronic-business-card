@@ -1,0 +1,90 @@
+<!doctype html><html lang="ja"><head>
+<meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LUNOA JavaScript 改訂版｜形の変化・操作・画面幅QA</title>
+<style>
+body{background:#edf3e9;color:#244a32;margin:0;padding:24px;font:14px/1.6 system-ui,sans-serif}h1{font-size:23px}h2{font-size:18px}
+#summary{padding:14px;border-radius:8px;background:white;font-weight:800}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:18px}
+.card{padding:16px;border-radius:8px;border:1px solid #bdd3c1;background:white}
+.pass{color:#14784b}.fail{color:#af2e25}
+pre{font:11px/1.5 monospace;white-space:pre-wrap;overflow-wrap:anywhere}
+.offscreen{position:absolute;left:-20000px;top:0;pointer-events:none}
+</style></head><body><h1>JavaScript版｜実際に形が変わるかの自動検証</h1>
+<p>元の集客版と同じ料金・FAQを保持したまま、320 / 390 / 768 / 1280pxで「写真の拡大・形状変化・画像切替」と基本操作を確認します。</p>
+<div id="summary">検証中…</div><div id="cards" class="grid"></div><div id="frames" class="offscreen"></div>
+<script>
+(async()=>{
+ const widths=[320,390,768,1280],all=[],sleep=ms=>new Promise(r=>setTimeout(r,ms));
+ function waitLoad(f){return new Promise((ok,no)=>{f.onload=ok;f.onerror=()=>no(new Error('iframe load failed'))})}
+ async function run(width){
+  const frame=document.createElement("iframe");frame.width=width;frame.height=800;
+  frame.style.cssText="width:"+width+"px;height:800px;border:0";frame.title="QA "+width;
+  const loading=waitLoad(frame);frame.src="./index.html?qa=1";document.getElementById("frames").append(frame);await loading;
+  const w=frame.contentWindow,d=w.document,checks={},notes={},errors=[];
+  w.addEventListener("error",e=>errors.push(e.message||String(e)));
+  for(let i=0;i<100&&d.documentElement.dataset.motionRebuildReady!=="true";i++)await sleep(100);
+  checks.jsReady=d.documentElement.dataset.motionRebuildReady==="true"&&d.documentElement.dataset.ready==="true";
+  checks.viewport=w.innerWidth===width;
+  checks.noHorizontalScroll=d.documentElement.scrollWidth<=width+3;
+  const overflow=[];
+  for(const selector of [".header-inner",".hero-content",".hero h1",".motion-go-link","#morph-intro-copy",".morph-controls",".promise-grid",".plan-grid",".selected-plan",".faq-grid"]){
+    const el=d.querySelector(selector);if(!el){overflow.push(selector+": missing");continue}
+    const r=el.getBoundingClientRect();
+    if((r.left < -5 || r.right > width+5)&&selector!=="#morph-intro-copy")overflow.push(selector+": "+r.left.toFixed(1)+" – "+r.right.toFixed(1));
+  }
+  checks.elementsFit=overflow.length===0;notes.overflow=overflow;
+  const section=d.getElementById("motion-story"),stage=d.getElementById("morph-sticky"),shape=d.getElementById("morph-image-frame");
+  const header=d.querySelector(".site-header");
+  const start=section.getBoundingClientRect().top+w.scrollY-header.offsetHeight;
+  const dist=section.offsetHeight-stage.offsetHeight;
+  function scroll(p){w.scrollTo({top:Math.round(start+dist*p),behavior:"instant"})}
+  scroll(.015);await sleep(230);
+  const a=shape.getBoundingClientRect();
+  notes.start={width:a.width,height:a.height,radius:w.getComputedStyle(shape).borderTopLeftRadius,progress:d.documentElement.dataset.morphProgress};
+  checks.startsAsPortrait=a.width<width*.84&&parseFloat(w.getComputedStyle(shape).borderTopLeftRadius)>50;
+  scroll(.56);await sleep(280);
+  const b=shape.getBoundingClientRect();
+  notes.middle={width:b.width,height:b.height,radius:w.getComputedStyle(shape).borderTopLeftRadius,open:d.documentElement.dataset.morphOpen,phase:d.documentElement.dataset.morphPhase};
+  checks.expandsVisibly=b.width>a.width*1.35&&b.width>width*.9;
+  checks.radiusChanges=parseFloat(w.getComputedStyle(shape).borderTopLeftRadius)<parseFloat(notes.start.radius)*.4;
+  checks.showsWideText=parseFloat(stage.style.getPropertyValue("--morph-wide-opacity"))>.5;
+  scroll(.96);await sleep(280);
+  notes.end={width:shape.getBoundingClientRect().width,photoB:d.documentElement.dataset.morphPhotoB,phase:d.documentElement.dataset.morphPhase};
+  checks.secondPhotoAppears=Number(d.documentElement.dataset.morphPhotoB)>.95&&d.documentElement.dataset.morphPhase==="3";
+  checks.finaleReadable=Number(stage.style.getPropertyValue("--morph-finale-opacity"))>.95;
+  checks.threeSceneButtons=d.querySelectorAll("[data-morph-seek]").length===3;
+  d.querySelector('[data-plan="ticket"]').click();
+  await sleep(650);
+  checks.priceTicket=d.getElementById("selected-price").textContent.includes("26,000")&&d.querySelector('[data-plan="ticket"]').getAttribute("aria-pressed")==="true";
+  d.querySelector('[data-plan="single"]').click();
+  await sleep(650);
+  checks.priceSingle=d.getElementById("selected-price").textContent.includes("7,000");
+  checks.planColorChanges=d.querySelector(".pricing-section").dataset.activePlan==="single";
+  d.querySelector("[data-open-guide]").click();
+  checks.dialogOpens=d.getElementById("booking-dialog").open&&d.getElementById("guide-plan").textContent.includes("7,000");
+  d.querySelector("[data-close-guide]").click();
+  checks.dialogCloses=!d.getElementById("booking-dialog").open;
+  const faq=d.querySelector("#faq details");faq.querySelector("summary").click();
+  checks.faqOpens=faq.open;
+  checks.keepsThreePrices=["3,000","7,000","26,000"].every(s=>d.querySelector("#plans").textContent.includes(s));
+  checks.noForms=d.querySelectorAll("form").length===0;
+  checks.noRuntimeErrors=errors.length===0;
+  notes.scrollWidth=d.documentElement.scrollWidth;notes.consoleErrors=errors;
+  const passed=Object.values(checks).every(Boolean);
+  frame.remove();return{width,passed,checks,notes};
+ }
+ for(const width of widths){try{all.push(await run(width))}catch(e){all.push({width,passed:false,error:String(e)})}}
+ for(const item of all){
+   const card=document.createElement("section");card.className="card";
+   const title=document.createElement("h2");title.textContent=item.width+"px — "+(item.passed?"PASS":"FAIL");
+   title.className=item.passed?"pass":"fail";
+   const content=document.createElement("pre");content.textContent=JSON.stringify(item,null,2);
+   card.append(title,content);document.getElementById("cards").append(card);
+ }
+ const success=all.every(x=>x.passed);
+ document.getElementById("summary").textContent=success?"PASS — 4幅で写真が明確に拡大・変形し、操作も正常":"FAIL — 下記の不具合をご確認ください";
+ document.getElementById("summary").className=success?"pass":"fail";
+ document.documentElement.dataset.qaDone="true";
+ window.LUNOA_MOTION_QA=all;
+})();
+</script></body></html>
