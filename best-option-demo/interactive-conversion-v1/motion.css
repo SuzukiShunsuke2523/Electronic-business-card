@@ -133,17 +133,43 @@
  .morph-phase{font-size:9px}
  .morph-phase span{font-size:8px}
 }
+
+/* State is applied by motion.js. Honors OS accessibility settings, while allowing
+   explicitly opted-in one-shot playback without silently overriding the preference. */
+.morph-reduced-message{display:none!important}
+.motion-rebuild[data-motion-reduced="true"]:not([data-motion-optin="true"]) .morph-reduced-message{
+ display:block!important;color:#315b40;background:#f7fff0e8;border:1px solid #a9c7a9;
+ padding:10px 13px;border-radius:6px;font-size:12px;line-height:1.75;max-width:380px
+}
+.motion-rebuild[data-motion-reduced="true"]:not([data-motion-optin="true"]) .morph-story{height:100svh}
+.motion-rebuild[data-motion-reduced="true"]:not([data-motion-optin="true"]) .morph-sticky{position:relative;top:0;height:100svh}
+.motion-rebuild[data-motion-reduced="true"]:not([data-motion-optin="true"]) .morph-image-frame{
+ left:72%;top:50%;width:35vw;height:65vh;border-radius:190px 190px 8px 8px;
+ transform:translate(-50%,-50%)!important;
+}
+.motion-rebuild[data-motion-reduced="true"]:not([data-motion-optin="true"]) .morph-wide-copy,
+.motion-rebuild[data-motion-reduced="true"]:not([data-motion-optin="true"]) .morph-finale-copy,
+.motion-rebuild[data-motion-reduced="true"]:not([data-motion-optin="true"]) .morph-progress{display:none!important}
+.motion-rebuild[data-motion-reduced="true"]:not([data-motion-optin="true"]) .morph-intro-copy{opacity:1!important}
+.motion-rebuild[data-motion-reduced="true"]:not([data-motion-optin="true"]) .morph-image-second{opacity:0!important}
+.motion-rebuild[data-motion-reduced="true"]:not([data-motion-optin="true"]) .morph-controls{display:flex!important}
+.motion-rebuild[data-motion-reduced="true"]:not([data-motion-optin="true"]) .morph-play-trigger{display:block!important}
+@media(max-width:610px){
+ .motion-rebuild[data-motion-reduced="true"]:not([data-motion-optin="true"]) .morph-image-frame{
+   left:50%;top:70%;width:68vw;height:48svh;border-radius:150px 150px 7px 7px;
+ }
+}
+/* Decorative perpetual motion stays disabled under the operating-system setting.
+   Manual replay still animates the finite photo morph via JavaScript on user intent. */
 @media(prefers-reduced-motion:reduce){
  .motion-rebuild,.motion-rebuild *{scroll-behavior:auto!important}
- .motion-rebuild .morph-story{height:100svh}
- .motion-rebuild .morph-sticky{position:relative;top:0;height:100svh}
- .motion-rebuild .morph-image-frame{left:70%;top:50%;width:35vw;height:65vh;border-radius:200px 200px 8px 8px}
- .motion-rebuild .morph-wide-copy,.motion-rebuild .morph-finale-copy,.motion-rebuild .morph-controls,.motion-rebuild .morph-progress{display:none!important}
- .motion-rebuild .morph-intro-copy{opacity:1!important}
- .motion-rebuild .morph-image-second{opacity:0!important}
- .motion-rebuild .morph-image-frame,.motion-rebuild .hero-media,.motion-rebuild .hero-clip>span{animation:none!important;transition:none!important;transform:none!important}
- .motion-rebuild .morph-image-frame{transform:translate(-50%,-50%)!important}
- .motion-rebuild .hero-clip>span,.motion-rebuild .hero-label,.motion-rebuild .hero-description,.motion-rebuild .hero-cta-row,.motion-rebuild .hero-price{animation:none!important;opacity:1!important;transform:none!important}
+ .motion-rebuild .hero-media,.motion-rebuild .hero-clip>span{
+   animation:none!important;transition:none!important
+ }
+ .motion-rebuild .hero-clip>span,
+ .motion-rebuild .hero-label,.motion-rebuild .hero-description,.motion-rebuild .hero-cta-row,.motion-rebuild .hero-price{
+   animation:none!important;opacity:1!important;transform:none!important
+ }
  .motion-rebuild .plan-card.is-selected:before{animation:none!important}
 }
 
@@ -160,4 +186,40 @@
  .morph-play-trigger{left:50%;right:auto;bottom:100px;transform:translateX(-50%);white-space:nowrap;padding:11px 17px;font-size:11px}
  .morph-play-trigger:hover{transform:translateX(-50%)}
 }
-@media(prefers-reduced-motion:reduce){.morph-play-trigger{display:none!important}}
+/* Play control remains visible even when reduced motion is requested. */
+
+
+/* Mobile: above the conversion page's fixed bottom pricing bar (65px + safe area). */
+.motion-rebuild .motion-go-link{
+ display:inline-flex;align-items:center;gap:5px;border:1px solid #6b9676;border-radius:5px;
+ padding:12px 15px;background:#e8f1e3;font-weight:800;color:#2f6945
+}
+.motion-rebuild .motion-go-link:hover{background:#d8eaca}
+@media(max-width:610px){
+ .motion-rebuild .morph-controls{
+  bottom:calc(75px + env(safe-area-inset-bottom));left:12px;right:12px;
+  min-height:56px
+ }
+ .motion-rebuild .morph-play-trigger{
+  bottom:calc(145px + env(safe-area-inset-bottom));z-index:25;
+  left:50%;right:auto;transform:translateX(-50%);
+  min-height:44px;padding:12px 20px;border:2px solid #24543b;
+  box-shadow:0 6px 28px #112d2077
+ }
+ .motion-rebuild .morph-play-trigger:hover{transform:translateX(-50%)}
+ .motion-rebuild .morph-counter{
+  top:17px;bottom:auto;right:18px;left:auto;font-size:24px;z-index:15
+ }
+ .motion-rebuild .morph-scroll-hint{display:none}
+ .motion-rebuild .morph-intro-copy{
+  top:10%;width:calc(100% - 44px);
+ }
+ .motion-rebuild .morph-reduced-message{
+  font-size:11px!important;padding:8px 10px!important;line-height:1.6!important
+ }
+ .motion-rebuild .morph-photo-label{top:17px;right:14px}
+}
+@media(max-width:360px){
+ .motion-rebuild .morph-play-trigger{bottom:calc(139px + env(safe-area-inset-bottom))}
+ .motion-rebuild .morph-phase{padding:8px 4px;font-size:9px}
+}
