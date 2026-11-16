@@ -383,3 +383,73 @@
     transition-duration:1.1s!important;
   }
 }
+
+
+/* v7 — a selected plan has visible, slow physical depth rather than an
+   instant highlight. The selection captions have been removed from HTML;
+   only the check mark remains, with aria-pressed for assistive technology. */
+.motion-rebuild .motion-plan-grid{perspective:1100px;perspective-origin:50% 50%;isolation:isolate}
+.motion-rebuild .motion-plan-grid .plan-card{
+  z-index:0;
+  transform:none!important;
+  transform-origin:50% 65%;
+  backface-visibility:hidden;
+  box-shadow:0 2px 5px rgba(28,66,43,.04);
+  transition:
+    transform 1.13s cubic-bezier(.19,.72,.19,1),
+    box-shadow 1.13s cubic-bezier(.19,.72,.19,1),
+    background-color 1.08s cubic-bezier(.19,.72,.19,1),
+    border-color 1.08s cubic-bezier(.19,.72,.19,1)!important;
+}
+.motion-rebuild .motion-plan-grid .plan-card:hover:not(.is-selected){
+  transform:none!important;
+}
+.motion-rebuild .motion-plan-grid .plan-card.is-selected{
+  z-index:2;
+  transform:translate3d(0,-10px,0) scale(1.012) rotateX(1.4deg)!important;
+  box-shadow:
+    0 28px 40px -18px rgba(27,64,39,.25),
+    0 12px 20px -13px rgba(27,64,39,.2),
+    0 0 0 1px rgba(109,144,109,.16);
+}
+.motion-rebuild .motion-plan-grid .plan-card .plan-select{
+  display:flex;align-items:center;justify-content:flex-start;
+  min-height:20px;gap:0;
+  transition:opacity 1.07s cubic-bezier(.19,.72,.19,1);
+}
+.motion-rebuild .motion-plan-grid .plan-card .select-circle{
+  width:20px;height:20px;
+  transition:
+    background-color 1.07s cubic-bezier(.19,.72,.19,1),
+    border-color 1.07s cubic-bezier(.19,.72,.19,1),
+    box-shadow 1.07s cubic-bezier(.19,.72,.19,1);
+}
+.motion-rebuild .motion-plan-grid .plan-card.is-selected .select-circle{
+  box-shadow:0 3px 12px rgba(49,95,62,.2);
+}
+.motion-rebuild .motion-plan-grid .plan-card::before{
+  background:linear-gradient(0deg,rgba(214,235,198,.36),rgba(255,255,255,.13) 72%);
+  transition:opacity 1.13s cubic-bezier(.19,.72,.19,1),
+             transform 1.13s cubic-bezier(.19,.72,.19,1);
+}
+.motion-rebuild .motion-plan-grid .plan-card:focus-visible{
+  outline:3px solid #9a734e;outline-offset:4px;
+}
+@media(max-width:610px){
+  .motion-rebuild .motion-plan-grid .plan-card.is-selected{
+    transform:translate3d(0,-8px,0) scale(1.006) rotateX(.8deg)!important;
+    box-shadow:0 23px 34px -17px rgba(27,64,39,.27),0 9px 16px -12px rgba(27,64,39,.22);
+  }
+  .motion-rebuild .motion-plan-grid .plan-card .plan-select{
+    grid-column:1/-1;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  /* Preserve a clear selected state but avoid large spatial movement
+     for users who explicitly prefer reduced motion. */
+  .motion-rebuild .motion-plan-grid .plan-card{transition-duration:.2s!important}
+  .motion-rebuild .motion-plan-grid .plan-card.is-selected{
+    transform:none!important;
+    box-shadow:0 7px 21px rgba(27,64,39,.2);
+  }
+}
