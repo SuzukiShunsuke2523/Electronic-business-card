@@ -198,27 +198,96 @@
   // Original conversion-v1/app.js updates the selected plan and its exact
   // price immediately. No number interpolation, typewriter or count-up.
   // This layer changes only the decorative background at a measured pace.
+  // The base conversion-v1/app.js is responsible for immediate, accessible
+  // state and exact (non-animated) yen amounts. This layer only visualizes
+  // selection with a slow rising bloom. FAQ animation below is unchanged.
   const choices=new Set(["trial","single","ticket"]);
-  const calmEase="cubic-bezier(.22,.7,.2,1)";
+  const selectionGrid=document.querySelector(".plan-grid");
+  const summaryTitle=document.getElementById("selected-title");
+  const summaryDescription=document.getElementById("selected-description");
+  const summaryContainer=document.querySelector(".selected-summary");
+  const softEase="cubic-bezier(.18,.75,.2,1)";
+  let previousCopy=null;
+  let selectedAnimations=[];
+
+  // Capture the outgoing description before conversion-v1/app.js replaces it.
+  selectionGrid?.addEventListener("click",event=>{
+    const button=event.target.closest("[data-plan]");
+    if(!button||!selectionGrid.contains(button))return;
+    previousCopy={
+      title:summaryTitle?.textContent||"",
+      description:summaryDescription?.textContent||""
+    };
+  },true);
+
+  function cancelSelectionMotion(){
+    for(const animation of selectedAnimations){
+      try{animation.cancel()}catch(_){}
+    }
+    selectedAnimations=[];
+    summaryContainer?.querySelectorAll(".selection-copy-ghost").forEach(el=>el.remove());
+  }
+  function floatIn(element,delay){
+    if(!element||typeof element.animate!=="function")return;
+    const animation=element.animate([
+      {opacity:0,transform:"translateY(18px)",filter:"blur(6px)"},
+      {offset:.5,opacity:.57,transform:"translateY(7px)",filter:"blur(2px)"},
+      {opacity:1,transform:"translateY(0px)",filter:"blur(0px)"}
+    ],{duration:1160,delay,easing:softEase,fill:"both"});
+    selectedAnimations.push(animation);
+    animation.onfinish=()=>{animation.cancel();};
+  }
+  function fadeOutgoing(element,oldText){
+    if(!element||!oldText||typeof element.animate!=="function"||!summaryContainer)return;
+    const ghost=element.cloneNode(false);
+    ghost.removeAttribute("id");
+    ghost.textContent=oldText;
+    ghost.className="selection-copy-ghost";
+    ghost.setAttribute("aria-hidden","true");
+    ghost.style.position="absolute";
+    ghost.style.pointerEvents="none";
+    ghost.style.left=element.offsetLeft+"px";
+    ghost.style.top=element.offsetTop+"px";
+    ghost.style.width=element.offsetWidth+"px";
+    ghost.style.margin="0";
+    summaryContainer.appendChild(ghost);
+    const animation=ghost.animate([
+      {opacity:.95,transform:"translateY(0px)",filter:"blur(0px)"},
+      {opacity:0,transform:"translateY(-7px)",filter:"blur(4px)"}
+    ],{duration:540,easing:softEase,fill:"forwards"});
+    selectedAnimations.push(animation);
+    animation.onfinish=()=>ghost.remove();
+  }
+
   document.querySelectorAll("[data-plan]").forEach(button=>{
     button.addEventListener("click",()=>{
       const key=button.dataset.plan;
       if(!choices.has(key)||!pricing)return;
-      // Logical state and yen amount must be correct immediately.
-      // Only the *visual indication* of selection unfolds gradually.
       pricing.dataset.activePlan=key;
       root.dataset.selectedPlan=key;
+      cancelSelectionMotion();
+
       const label=button.querySelector("[data-choice-label]");
+      // The label and the selected summary are the visual response. All
+      // amounts stay static and switch immediately via the base script.
       if(label&&typeof label.animate==="function"){
-        label.getAnimations().forEach(animation=>animation.cancel());
-        label.animate(
-          [{opacity:.12,filter:"blur(3px)",transform:"translateY(3px)"},
-           {opacity:1,filter:"blur(0)",transform:"translateY(0)"}],
-          {duration:wantsReduced()?390:1040,easing:calmEase}
-        );
+        const animation=label.animate([
+          {opacity:0,transform:"translateY(15px)",filter:"blur(6px)"},
+          {offset:.55,opacity:.55,transform:"translateY(6px)",filter:"blur(2px)"},
+          {opacity:1,transform:"translateY(0px)",filter:"blur(0px)"}
+        ],{duration:1240,easing:softEase,fill:"both"});
+        selectedAnimations.push(animation);
+        animation.onfinish=()=>animation.cancel();
       }
-      // conversion-v1/app.js maintains aria-pressed, plan description,
-      // exact non-animated prices and the booking guide.
+      // Keep the previous copy briefly visible while the new words float up.
+      // Skip ghosts for a second click on the same plan.
+      if(previousCopy&&previousCopy.title!==summaryTitle?.textContent){
+        fadeOutgoing(summaryTitle,previousCopy.title);
+        fadeOutgoing(summaryDescription,previousCopy.description);
+      }
+      floatIn(summaryTitle,160);
+      floatIn(summaryDescription,270);
+      previousCopy=null;
     });
   });
   if(pricing)pricing.dataset.activePlan="trial";
