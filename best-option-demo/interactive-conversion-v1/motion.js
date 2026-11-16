@@ -199,17 +199,69 @@
   // price immediately. No number interpolation, typewriter or count-up.
   // This layer changes only the decorative background at a measured pace.
   const choices=new Set(["trial","single","ticket"]);
+  const calmEase="cubic-bezier(.22,.7,.2,1)";
   document.querySelectorAll("[data-plan]").forEach(button=>{
     button.addEventListener("click",()=>{
       const key=button.dataset.plan;
       if(!choices.has(key)||!pricing)return;
+      // Logical state and yen amount must be correct immediately.
+      // Only the *visual indication* of selection unfolds gradually.
       pricing.dataset.activePlan=key;
       root.dataset.selectedPlan=key;
-      // The original script independently handles aria-pressed, price text,
-      // plan description, and the booking-guide dialog.
+      const label=button.querySelector("[data-choice-label]");
+      if(label&&typeof label.animate==="function"){
+        label.getAnimations().forEach(animation=>animation.cancel());
+        label.animate(
+          [{opacity:.12,filter:"blur(3px)",transform:"translateY(3px)"},
+           {opacity:1,filter:"blur(0)",transform:"translateY(0)"}],
+          {duration:wantsReduced()?390:1040,easing:calmEase}
+        );
+      }
+      // conversion-v1/app.js maintains aria-pressed, plan description,
+      // exact non-animated prices and the booking guide.
     });
   });
   if(pricing)pricing.dataset.activePlan="trial";
+
+  // Native details/summary retain their keyboard semantics. Animate the
+  // container's actual height instead of showing the answer instantly.
+  // While closing, keep details open until the collapse finishes.
+  const faqAnimations=new WeakMap();
+  document.querySelectorAll(".faq-list details").forEach(details=>{
+    const summary=details.querySelector("summary");
+    if(!summary)return;
+    summary.addEventListener("click",event=>{
+      if(typeof details.animate!=="function")return; // Native fallback
+      event.preventDefault();
+      const previousTarget=details.dataset.faqTarget;
+      const isCurrentlyTargetOpen=previousTarget===undefined?details.open:previousTarget==="true";
+      const shouldOpen=!isCurrentlyTargetOpen;
+      const fromHeight=details.getBoundingClientRect().height;
+      const existing=faqAnimations.get(details);
+      if(existing){existing.cancel();faqAnimations.delete(details);}
+      details.style.height=fromHeight+"px";
+      details.classList.add("faq-expanding");
+      if(shouldOpen)details.open=true;
+      const css=getComputedStyle(details);
+      const border=(parseFloat(css.borderTopWidth)||0)+(parseFloat(css.borderBottomWidth)||0);
+      const targetHeight=shouldOpen
+        ? Math.max(details.scrollHeight+border,summary.offsetHeight+border)
+        : summary.offsetHeight+border;
+      details.dataset.faqTarget=String(shouldOpen);
+      const animation=details.animate(
+        [{height:fromHeight+"px"},{height:targetHeight+"px"}],
+        {duration:wantsReduced()?480:920,easing:calmEase}
+      );
+      faqAnimations.set(details,animation);
+      animation.onfinish=()=>{
+        if(faqAnimations.get(details)!==animation)return;
+        if(!shouldOpen)details.open=false;
+        details.style.removeProperty("height");
+        details.classList.remove("faq-expanding");
+        faqAnimations.delete(details);
+      };
+    });
+  });
   const obs=("IntersectionObserver" in window&&!wantsReduced())?new IntersectionObserver(entries=>{
     for(const entry of entries){
       if(entry.isIntersecting){
