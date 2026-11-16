@@ -1,0 +1,64 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>LUNOA｜ゆっくり選択＋FAQ展開 QA</title><style>
+body{margin:0;padding:20px;background:#eef3ec;color:#244633;font:14px/1.55 system-ui,sans-serif}h1{font-size:22px}#status{padding:15px;border-radius:9px;background:#fff;font-weight:750}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:13px;margin-top:16px}.card{background:#fff;border:1px solid #cfdfd1;border-radius:9px;padding:13px}.pass{color:#18774b}.fail{color:#b12f27}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:11px/1.45 monospace}.offscreen{position:absolute;left:-15000px;top:0;pointer-events:none}
+</style></head><body><h1>プラン選択・FAQの滑らかさ｜自動QA</h1><p>320 / 390 / 768 / 1280pxで「金額は静止」「選択表示が約1秒かけて現れる」「FAQの高さが開閉の途中でも変化する」を確認します。</p><div id="status">検証中…</div><div id="cards" class="grid"></div><div id="frames" class="offscreen"></div><script>
+(async()=>{
+const sleep=ms=>new Promise(r=>setTimeout(r,ms)),results=[];
+async function test(width){
+  const frame=document.createElement('iframe');frame.title=width+'px';frame.width=width;frame.height=820;frame.style.width=width+'px';frame.style.height='820px';
+  const done=new Promise((resolve,reject)=>{frame.onload=resolve;frame.onerror=()=>reject(new Error('iframe failed'))});
+  frame.src='./index.html?qa-smooth=1';document.getElementById('frames').append(frame);await done;
+  const doc=frame.contentDocument,win=frame.contentWindow,$=s=>doc.querySelector(s),checks={},notes={};
+  for(let i=0;i<100&&!(doc.documentElement.dataset.ready==='true'&&doc.documentElement.dataset.motionRebuildReady==='true');i++)await sleep(100);
+  checks.ready=doc.documentElement.dataset.ready==='true'&&doc.documentElement.dataset.motionRebuildReady==='true';
+  const ticket=$('[data-plan="ticket"]'),label=ticket.querySelector('[data-choice-label]'),price=$('#selected-price');
+  const initialY=ticket.getBoundingClientRect().y;
+  const initialBg=win.getComputedStyle(ticket).backgroundColor;
+  ticket.click();
+  const amountImmediate=price.textContent.trim(),labelImmediate=label.textContent.trim();
+  const opacityEarly=Number(win.getComputedStyle(label).opacity);
+  const ticketY=ticket.getBoundingClientRect().y;
+  await sleep(320);
+  const opacityMiddle=Number(win.getComputedStyle(label).opacity);
+  const bgMiddle=win.getComputedStyle(ticket).backgroundColor;
+  const amountMiddle=price.textContent.trim();
+  await sleep(900);
+  const opacityEnd=Number(win.getComputedStyle(label).opacity);
+  const bgEnd=win.getComputedStyle(ticket).backgroundColor;
+  const amountEnd=price.textContent.trim();
+  checks.priceAlwaysExact=[amountImmediate,amountMiddle,amountEnd].every(x=>x.startsWith('¥26,000'));
+  checks.stateImmediate=ticket.getAttribute('aria-pressed')==='true'&&labelImmediate==='選択中';
+  checks.labelSlowReveal=opacityEarly<.55&&opacityMiddle>opacityEarly+.12&&opacityMiddle<.97&&opacityEnd>.97;
+  checks.cardGradualColor=initialBg!==bgMiddle&&bgMiddle!==bgEnd;
+  checks.cardNeverJumps=Math.abs(initialY-ticketY)<1.5;
+  notes.plan={amounts:[amountImmediate,amountMiddle,amountEnd],opacities:[opacityEarly,opacityMiddle,opacityEnd],colors:[initialBg,bgMiddle,bgEnd]};
+  const faq=$('#faq details'),summary=faq.querySelector('summary');
+  const height=()=>faq.getBoundingClientRect().height;
+  const before=height();
+  summary.click();
+  const afterClick=height();
+  await sleep(270);
+  const mid=height();
+  await sleep(800);
+  const expanded=height();
+  checks.faqOpens=faq.open===true;
+  checks.faqGrowsGradually=mid>before+5&&mid<expanded-5&&expanded>before+30&&afterClick<expanded-5;
+  notes.faqOpenHeights={before,afterClick,mid,expanded};
+  summary.click();
+  const startClose=height();
+  await sleep(270);
+  const closingMid=height();
+  await sleep(800);
+  const collapsed=height();
+  checks.faqCloses=faq.open===false;
+  checks.faqShrinksGradually=closingMid<startClose-5&&closingMid>collapsed+5&&Math.abs(before-collapsed)<4;
+  notes.faqCloseHeights={startClose,closingMid,collapsed};
+  checks.noHorizontalOverflow=doc.documentElement.scrollWidth<=width+3;
+  checks.faqCount=doc.querySelectorAll('#faq details').length===4;
+  const ok=Object.values(checks).every(Boolean);
+  frame.remove();return {width,ok,checks,notes};
+}
+for(const width of [320,390,768,1280]){try{results.push(await test(width))}catch(e){results.push({width,ok:false,error:String(e)})}}
+for(const result of results){const card=document.createElement('section');card.className='card';const h=document.createElement('h2');h.className=result.ok?'pass':'fail';h.textContent=result.width+'px — '+(result.ok?'PASS':'FAIL');const pre=document.createElement('pre');pre.textContent=JSON.stringify(result,null,2);card.append(h,pre);document.getElementById('cards').append(card)}
+const passed=results.every(x=>x.ok);document.getElementById('status').className=passed?'pass':'fail';document.getElementById('status').textContent=passed?'PASS｜選択状態が徐々に現れ、FAQの実際の高さがゆっくり伸縮':'FAIL｜下記の検証項目を確認してください';document.documentElement.dataset.qaComplete='true';window.LUNOA_SMOOTH_QA=results;
+})();
+</script></body></html>
