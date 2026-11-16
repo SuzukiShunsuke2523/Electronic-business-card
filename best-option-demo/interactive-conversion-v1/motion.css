@@ -336,3 +336,50 @@
    transform:none;
  }
 }
+
+
+/* v6 — selection "ふわっと浮き上がる" visual response.
+   The plan name and explanatory text float up and blur into focus.
+   Yen price labels are intentionally excluded from every animation. */
+.motion-rebuild .selected-summary{position:relative;isolation:isolate}
+.motion-rebuild .selected-summary.changed{
+  animation:none!important;
+  transform:none!important;
+}
+.motion-rebuild .selected-summary .selection-copy-ghost{
+  white-space:normal;
+  z-index:2;
+  opacity:1;
+  color:inherit;
+  will-change:opacity,transform,filter;
+}
+.motion-rebuild .plan-card [data-choice-label]{
+  will-change:opacity,transform,filter;
+}
+.motion-rebuild .plan-card::before{
+  background:linear-gradient(0deg,rgba(205,232,195,.44),rgba(255,255,255,.04) 76%);
+  transform:translateY(21px);
+  transition:opacity 1.18s cubic-bezier(.18,.75,.2,1),
+             transform 1.18s cubic-bezier(.18,.75,.2,1);
+}
+.motion-rebuild .plan-card.is-selected::before{
+  opacity:1;
+  transform:translateY(0);
+}
+.motion-rebuild .selected-price,
+.motion-rebuild .plan-price{
+  animation:none!important;
+  transition:none!important;
+  transform:none!important;
+}
+/* User-initiated finite selection feedback remains deliberate and visible on
+   an iPhone even when its reduced-motion option is enabled. No autoplay. */
+@media(prefers-reduced-motion:reduce){
+  .motion-rebuild .plan-card,
+  .motion-rebuild .plan-card .plan-select,
+  .motion-rebuild .plan-card .select-circle,
+  .motion-rebuild .plan-card .select-circle::before,
+  .motion-rebuild .selected-plan{
+    transition-duration:1.1s!important;
+  }
+}
