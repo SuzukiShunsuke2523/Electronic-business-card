@@ -267,18 +267,8 @@
       root.dataset.selectedPlan=key;
       cancelSelectionMotion();
 
-      const label=button.querySelector("[data-choice-label]");
-      // The label and the selected summary are the visual response. All
-      // amounts stay static and switch immediately via the base script.
-      if(label&&typeof label.animate==="function"){
-        const animation=label.animate([
-          {opacity:0,transform:"translateY(15px)",filter:"blur(6px)"},
-          {offset:.55,opacity:.55,transform:"translateY(6px)",filter:"blur(2px)"},
-          {opacity:1,transform:"translateY(0px)",filter:"blur(0px)"}
-        ],{duration:1240,easing:softEase,fill:"both"});
-        selectedAnimations.push(animation);
-        animation.onfinish=()=>animation.cancel();
-      }
+      // The selected card itself now rises in 3D via CSS; no caption text.
+      // Exact yen amounts and aria-pressed are maintained by the base script.
       // Keep the previous copy briefly visible while the new words float up.
       // Skip ghosts for a second click on the same plan.
       if(previousCopy&&previousCopy.title!==summaryTitle?.textContent){
