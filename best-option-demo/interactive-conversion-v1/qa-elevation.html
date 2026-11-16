@@ -1,0 +1,48 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>LUNOA 3D Card Selection QA</title><style>
+body{font:14px/1.5 system-ui,sans-serif;background:#edf3ed;color:#284633;padding:20px;margin:0}h1{font-size:22px}#status{padding:14px;background:#fff;border-radius:8px;font-weight:bold}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin-top:16px}.card{background:white;padding:15px;border:1px solid #caddcc;border-radius:9px}.ok{color:#167c4d}.bad{color:#ab2c2c}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:11px/1.5 monospace}.offscreen{position:absolute;left:-15000px;top:0;pointer-events:none}
+</style></head><body><h1>LUNOA 立体的な選択・文字削除 QA</h1><p>320／390／768／1280pxで、カードの浮き上がりの途中経過・選択テキスト削除・金額の即時表示・FAQの開閉を検査します。</p><div id="status">検証中…</div><div class="grid" id="cards"></div><div class="offscreen" id="frames"></div><script>
+(async()=>{
+ const widths=[320,390,768,1280],results=[],sleep=ms=>new Promise(r=>setTimeout(r,ms));
+ async function test(width){
+   const iframe=document.createElement("iframe");iframe.title="QA "+width+"px";iframe.width=width;iframe.height=850;iframe.style.width=width+"px";iframe.style.height="850px";
+   const loaded=new Promise((resolve,reject)=>{iframe.onload=resolve;iframe.onerror=()=>reject(new Error("iframe load failed"))});
+   iframe.src="./index.html?qa-elevation=1";document.getElementById("frames").append(iframe);await loaded;
+   const win=iframe.contentWindow,doc=win.document,$=s=>doc.querySelector(s),checks={},notes={};
+   for(let i=0;i<80&&!(doc.documentElement.dataset.motionRebuildReady==="true"&&doc.documentElement.dataset.ready==="true");i++)await sleep(100);
+   checks.ready=doc.documentElement.dataset.motionRebuildReady==="true"&&doc.documentElement.dataset.ready==="true";
+   const plans=[...doc.querySelectorAll(".plan-grid [data-plan]")],ticket=$('[data-plan="ticket"]'),single=$('[data-plan="single"]'),price=$("#selected-price");
+   checks.threePlans=plans.length===3;
+   checks.choiceCaptionsGone=plans.every(el=>!el.querySelector("[data-choice-label]")&&!el.textContent.includes("選択する")&&!el.textContent.includes("選択中"));
+   checks.ariaLabels=plans.every(el=>!!el.getAttribute("aria-label")&&el.hasAttribute("aria-pressed"));
+   checks.checkCircles=plans.every(el=>!!el.querySelector(".select-circle"));
+   const start=ticket.getBoundingClientRect(),startTop=start.top;
+   const css=win.getComputedStyle(ticket);
+   checks.transitionDuration=parseFloat(css.transitionDuration)>=1;
+   ticket.click();
+   const yenImmediately=price.textContent.trim(),selectedImmediately=ticket.getAttribute("aria-pressed");
+   const rectAtStart=ticket.getBoundingClientRect();
+   const shadowStart=win.getComputedStyle(ticket).boxShadow;
+   await sleep(430);
+   const rectMid=ticket.getBoundingClientRect(),shadowMid=win.getComputedStyle(ticket).boxShadow,priceMid=price.textContent.trim();
+   await sleep(950);
+   const rectEnd=ticket.getBoundingClientRect(),shadowEnd=win.getComputedStyle(ticket).boxShadow,priceEnd=price.textContent.trim();
+   const moveMid=startTop-rectMid.top,moveEnd=startTop-rectEnd.top;
+   checks.selectedImmediately=selectedImmediately==="true";
+   checks.priceNeverCounts=[yenImmediately,priceMid,priceEnd].every(x=>x.startsWith("¥26,000"));
+   checks.floatProgressive=moveMid>1.5&&moveEnd>moveMid+1&&moveEnd<16;
+   checks.shadowDeepens=shadowMid!==shadowStart&&shadowEnd!==shadowMid;
+   checks.selectedShape=win.getComputedStyle(ticket).transform!=="none";
+   notes.elevation={startTop,midTop:rectMid.top,endTop:rectEnd.top,moveMid,moveEnd,shadowStart,shadowMid,shadowEnd,transition:css.transitionDuration};
+   single.click();checks.otherPlanWorks=single.getAttribute("aria-pressed")==="true"&&price.textContent.trim().startsWith("¥7,000");
+   const faq=$("#faq details"),summary=faq.querySelector("summary"),before=faq.getBoundingClientRect().height;
+   summary.click();await sleep(330);const mid=faq.getBoundingClientRect().height;await sleep(850);const expanded=faq.getBoundingClientRect().height;
+   checks.faqStillExpands=faq.open&&mid>before+5&&expanded>mid+5;
+   summary.click();await sleep(1100);checks.faqStillCloses=!faq.open;
+   checks.noHorizontalOverflow=doc.documentElement.scrollWidth<=width+3;
+   const passed=Object.values(checks).every(Boolean);iframe.remove();return {width,passed,checks,notes};
+ }
+ for(const width of widths){try{results.push(await test(width))}catch(e){results.push({width,passed:false,error:String(e)})}}
+ for(const r of results){const card=document.createElement("section");card.className="card";const title=document.createElement("h2");title.textContent=r.width+"px — "+(r.passed?"PASS":"FAIL");title.className=r.passed?"ok":"bad";const pre=document.createElement("pre");pre.textContent=JSON.stringify(r,null,2);card.append(title,pre);document.getElementById("cards").append(card)}
+ const passed=results.every(r=>r.passed);const status=document.getElementById("status");status.textContent=passed?"PASS：立体感が徐々に増し、選択文字なし、金額とFAQは維持":"FAIL：問題の項目を確認してください";status.className=passed?"ok":"bad";document.documentElement.dataset.qaComplete="true";window.LUNOA_ELEVATION_QA=results;
+})();
+</script></body></html>
