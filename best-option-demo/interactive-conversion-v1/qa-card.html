@@ -1,0 +1,47 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>LUNOA 立体カードQA</title>
+<style>body{margin:0;padding:20px;background:#edf3ec;color:#234334;font:14px/1.5 system-ui,sans-serif}h1{font-size:22px}#status{padding:15px;background:#fff;border-radius:9px;font-weight:750}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:18px}.card{background:#fff;border:1px solid #c5d9cb;border-radius:8px;padding:14px}pre{font:11px/1.5 monospace;white-space:pre-wrap;overflow-wrap:anywhere}.pass{color:#11744a}.fail{color:#b02d22}.hidden{position:absolute;left:-20000px;top:0;pointer-events:none}</style></head><body><h1>LUNOA｜立体カード・選択文字削除の検証</h1><p>320・390・768・1280pxで、カードが約1.1秒かけて立体的に浮き、文字ラベルを表示せず、金額とFAQの操作を維持しているか検証します。</p><div id="status">確認中…</div><div id="results" class="grid"></div><div id="frames" class="hidden"></div>
+<script>
+(async()=>{
+const sleep=ms=>new Promise(r=>setTimeout(r,ms)),results=[];
+async function check(width){
+ const frame=document.createElement("iframe");frame.title=width+"px test";frame.width=width;frame.height=800;frame.style.width=width+"px";frame.style.height="800px";
+ const loaded=new Promise((yes,no)=>{frame.onload=yes;frame.onerror=()=>no(new Error("iframe failed"))});
+ frame.src="./index.html?qa-card=1";document.getElementById("frames").append(frame);await loaded;
+ const win=frame.contentWindow,doc=frame.contentDocument,$=s=>doc.querySelector(s),tests={},detail={};
+ for(let t=0;t<100&&!(doc.documentElement.dataset.ready==="true"&&doc.documentElement.dataset.motionRebuildReady==="true");t++)await sleep(100);
+ tests.ready=doc.documentElement.dataset.ready==="true"&&doc.documentElement.dataset.motionRebuildReady==="true";
+ const plans=[...doc.querySelectorAll(".motion-plan-grid [data-plan]")],ticket=$('[data-plan="ticket"]'),trial=$('[data-plan="trial"]'),single=$('[data-plan="single"]');
+ const price=$("#selected-price");
+ tests.exactly3Cards=plans.length===3;
+ tests.noChoiceLabels=plans.every(b=>!b.querySelector("[data-choice-label]")&&!/(選択中|選択する)/.test(b.textContent));
+ tests.hasAccessibleState=plans.every(b=>b.hasAttribute("aria-pressed"));
+ const y=()=>ticket.getBoundingClientRect().top;
+ const col=()=>win.getComputedStyle(ticket).boxShadow;
+ const beforeY=y(),beforeShadow=col();
+ ticket.click();
+ const nowY=y(),nowPrice=price.textContent.trim();
+ await sleep(420);
+ const midY=y(),midShadow=col(),midPrice=price.textContent.trim();
+ await sleep(850);
+ const endY=y(),endShadow=col(),endPrice=price.textContent.trim();
+ const lift=endY-beforeY;
+ tests.startsGradually=Math.abs(nowY-beforeY)<Math.max(2,Math.abs(lift)*.45);
+ tests.risesGradually=lift< -4 && midY<beforeY-1 && midY>endY+1;
+ tests.shadowDevelops=beforeShadow!==midShadow&&midShadow!==endShadow;
+ tests.noPriceCount=[nowPrice,midPrice,endPrice].every(p=>p.startsWith("¥26,000"));
+ tests.ticketSelected=ticket.getAttribute("aria-pressed")==="true";
+ detail.ticket={y:[beforeY,nowY,midY,endY],lift,shadows:[beforeShadow,midShadow,endShadow],prices:[nowPrice,midPrice,endPrice]};
+ single.click();tests.singlePrice=price.textContent.trim().startsWith("¥7,000")&&single.getAttribute("aria-pressed")==="true";
+ trial.click();tests.trialPrice=price.textContent.trim().startsWith("¥3,000")&&trial.getAttribute("aria-pressed")==="true";
+ const faq=$("#faq details");faq.querySelector("summary").click();await sleep(1020);
+ tests.faqStillOpens=faq.open;
+ faq.querySelector("summary").click();await sleep(1020);tests.faqStillCloses=!faq.open;
+ tests.noOverflow=doc.documentElement.scrollWidth<=width+4;
+ tests.noForms=doc.querySelectorAll("form").length===0;
+ const pass=Object.values(tests).every(Boolean);frame.remove();return{width,pass,tests,detail};
+}
+for(const width of [320,390,768,1280]){try{results.push(await check(width))}catch(e){results.push({width,pass:false,error:String(e)})}}
+for(const x of results){const item=document.createElement("section");item.className="card";const h=document.createElement("h2");h.className=x.pass?"pass":"fail";h.textContent=x.width+"px "+(x.pass?"PASS":"FAIL");const pre=document.createElement("pre");pre.textContent=JSON.stringify(x,null,2);item.append(h,pre);document.getElementById("results").append(item)}
+const all=results.every(x=>x.pass),status=document.getElementById("status");status.className=all?"pass":"fail";status.textContent=all?"PASS｜浮き上がり・選択文字なし・FAQと金額を確認":"FAIL｜詳細をご確認ください";document.documentElement.dataset.qaComplete="true";window.LUNOA_CARD_QA=results;
+})();
+</script></body></html>
