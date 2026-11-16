@@ -274,3 +274,65 @@
  .motion-rebuild .morph-play-trigger{bottom:calc(139px + env(safe-area-inset-bottom))}
  .motion-rebuild .morph-phase{padding:8px 4px;font-size:9px}
 }
+
+
+/* v5 refinement: let the chosen-state affordance settle in, rather than snap. */
+.motion-rebuild .plan-card .plan-select{
+  opacity:.56;
+  transition:opacity 1.05s cubic-bezier(.22,.7,.2,1),
+             color 1.05s cubic-bezier(.22,.7,.2,1);
+}
+.motion-rebuild .plan-card.is-selected .plan-select{opacity:1}
+.motion-rebuild .plan-card [data-choice-label]{
+  display:inline-block;
+  will-change:opacity,filter;
+}
+.motion-rebuild .plan-card .select-circle{
+  transition:background-color 1.06s cubic-bezier(.22,.7,.2,1),
+             border-color 1.06s cubic-bezier(.22,.7,.2,1);
+}
+.motion-rebuild .plan-card .select-circle::before{
+  transition:opacity 1.06s cubic-bezier(.22,.7,.2,1),
+             transform 1.06s cubic-bezier(.22,.7,.2,1);
+}
+.motion-rebuild .plan-card{
+  transition:background-color 1.06s cubic-bezier(.22,.7,.2,1),
+             border-color 1.06s cubic-bezier(.22,.7,.2,1),
+             box-shadow 1.06s cubic-bezier(.22,.7,.2,1);
+}
+.motion-rebuild .selected-plan{
+  transition:background-color 1.06s cubic-bezier(.22,.7,.2,1),
+             box-shadow 1.06s cubic-bezier(.22,.7,.2,1);
+}
+/* FAQ opens by growing its real height. A native <details> remains the fallback. */
+.motion-rebuild .faq-list details.faq-expanding{
+  overflow:hidden;
+  will-change:height;
+}
+.motion-rebuild .faq-list details summary span{
+  transition:transform .88s cubic-bezier(.22,.7,.2,1);
+}
+.motion-rebuild .faq-list details[open] > p{
+  animation:faqAnswerFloat .85s cubic-bezier(.22,.7,.2,1) both;
+}
+@keyframes faqAnswerFloat{
+  from{opacity:.15;transform:translateY(-8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+/* Keep price labels and yen amount motionless, as specifically requested. */
+.motion-rebuild .selected-price,
+.motion-rebuild .plan-price{
+  animation:none!important;
+  transition:none!important;
+}
+@media(prefers-reduced-motion:reduce){
+ .motion-rebuild .plan-card,
+ .motion-rebuild .plan-card .plan-select,
+ .motion-rebuild .plan-card .select-circle,
+ .motion-rebuild .plan-card .select-circle::before,
+ .motion-rebuild .selected-plan{transition-duration:.28s!important}
+ .motion-rebuild .faq-list details[open] > p{
+   animation-duration:.35s!important;
+   transform:none;
+ }
+}
