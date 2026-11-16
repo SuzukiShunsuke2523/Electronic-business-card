@@ -35,9 +35,10 @@ body{font:14px/1.5 system-ui,sans-serif;background:#edf3ed;color:#284633;padding
    notes.elevation={startTop,midTop:rectMid.top,endTop:rectEnd.top,moveMid,moveEnd,shadowStart,shadowMid,shadowEnd,transition:css.transitionDuration};
    single.click();checks.otherPlanWorks=single.getAttribute("aria-pressed")==="true"&&price.textContent.trim().startsWith("¥7,000");
    const faq=$("#faq details"),summary=faq.querySelector("summary"),before=faq.getBoundingClientRect().height;
-   summary.click();await sleep(330);const mid=faq.getBoundingClientRect().height;await sleep(850);const expanded=faq.getBoundingClientRect().height;
-   checks.faqStillExpands=faq.open&&mid>before+5&&expanded>mid+5;
-   summary.click();await sleep(1100);checks.faqStillCloses=!faq.open;
+   const state=()=>({height:faq.getBoundingClientRect().height,open:faq.open,target:faq.dataset.faqTarget,cssHeight:faq.style.height,animations:faq.getAnimations().map(x=>x.playState)});
+   notes.faqBefore=state();summary.click();notes.faqAfterClick=state();await sleep(330);notes.faqMiddle=state();await sleep(850);notes.faqExpanded=state();
+   checks.faqStillExpands=faq.open&&notes.faqMiddle.height>before+5&&notes.faqExpanded.height>notes.faqMiddle.height+5;
+   summary.click();notes.faqClosingStart=state();await sleep(1100);notes.faqClosed=state();checks.faqStillCloses=!faq.open;
    checks.noHorizontalOverflow=doc.documentElement.scrollWidth<=width+3;
    const passed=Object.values(checks).every(Boolean);iframe.remove();return {width,passed,checks,notes};
  }
