@@ -312,6 +312,7 @@
   // container's actual height instead of showing the answer instantly.
   // While closing, keep details open until the collapse finishes.
   const faqAnimations=new WeakMap();
+  const faqTimers=new WeakMap();
   document.querySelectorAll(".faq-list details").forEach(details=>{
     const summary=details.querySelector("summary");
     if(!summary)return;
@@ -323,6 +324,8 @@
       const shouldOpen=!isCurrentlyTargetOpen;
       const fromHeight=details.getBoundingClientRect().height;
       const existing=faqAnimations.get(details);
+      const oldTimer=faqTimers.get(details);
+      if(oldTimer!==undefined){clearTimeout(oldTimer);faqTimers.delete(details);}
       if(existing){existing.cancel();faqAnimations.delete(details);}
       details.style.height=fromHeight+"px";
       details.classList.add("faq-expanding");
@@ -338,13 +341,22 @@
         {duration:wantsReduced()?480:920,easing:calmEase}
       );
       faqAnimations.set(details,animation);
-      animation.onfinish=()=>{
+      const complete=()=>{
         if(faqAnimations.get(details)!==animation)return;
+        const timer=faqTimers.get(details);
+        if(timer!==undefined){clearTimeout(timer);faqTimers.delete(details);}
+        faqAnimations.delete(details);
         if(!shouldOpen)details.open=false;
         details.style.removeProperty("height");
         details.classList.remove("faq-expanding");
-        faqAnimations.delete(details);
+        // Completion fallback may run when browser suppresses offscreen
+        // Web Animation frames; release the stale animation safely.
+        if(animation.playState==="running")animation.cancel();
       };
+      animation.onfinish=complete;
+      // FAQ must never stay technically open forever if iOS/background-tab
+      // throttling prevents the Web Animations 'finish' event.
+      faqTimers.set(details,setTimeout(complete,(wantsReduced()?480:920)+130));
     });
   });
   const obs=("IntersectionObserver" in window&&!wantsReduced())?new IntersectionObserver(entries=>{
