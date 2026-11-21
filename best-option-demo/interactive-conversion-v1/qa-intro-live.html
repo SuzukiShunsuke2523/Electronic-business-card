@@ -1,0 +1,36 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>LUNOA Intro Live Timeline QA</title><style>
+body{background:#f3f5ee;color:#294837;font:14px/1.5 system-ui,sans-serif;margin:0;padding:18px}.panel{max-width:900px;margin:auto}h1{font-size:24px;margin-bottom:8px}#status{font-weight:800;background:white;padding:15px;border-radius:7px}.columns{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:18px;margin-top:16px}iframe{display:block;width:min(390px,100%);height:680px;border:2px solid #c1d1c3;border-radius:8px;background:white}pre{font:11px/1.45 monospace;white-space:pre-wrap;overflow-wrap:anywhere;background:white;padding:15px;border:1px solid #c5d8c8;border-radius:8px}.ok{color:#14774b}.bad{color:#b53524}@media(max-width:760px){.columns{grid-template-columns:1fr}}
+</style></head><body><div class="panel"><h1>見た目が本当に変わるか｜オープニング時間軸QA</h1><p>390px幅のサイトをこの画面内に表示した状態で再生し、0秒・0.85秒・1.7秒・3.2秒の透明度と位置の変化を測ります。</p><div id="status">準備中…</div><div class="columns"><iframe id="preview" title="LUNOA 390px動画演出の検証" src="./index.html?qa-intro-live=1"></iframe><pre id="result">計測中…</pre></div></div><script>
+(async()=>{
+const f=document.getElementById("preview"),status=document.getElementById("status"),report=document.getElementById("result");
+const sleep=ms=>new Promise(ok=>setTimeout(ok,ms));
+await new Promise(ok=>{if(f.contentDocument?.readyState==="complete")return ok();f.onload=ok});
+const w=f.contentWindow,d=f.contentDocument;
+for(let i=0;i<100&&d.documentElement.dataset.introReady!=="true";i++)await sleep(80);
+const replay=d.getElementById("intro-replay"),badge=d.querySelector(".intro-feature"),headline=d.querySelector(".hero-clip>span"),photo=d.querySelector(".motion-hero-photo");
+function snap(){
+ const b=w.getComputedStyle(badge),h=w.getComputedStyle(headline),p=w.getComputedStyle(photo);
+ return {badgeOpacity:Number(b.opacity),badgeTransform:b.transform,headlineOpacity:Number(h.opacity),headlineTransform:h.transform,photoOpacity:Number(p.opacity),photoTransform:p.transform,animation:b.animationName,seconds:Number(b.animationDelay.split(",")[0].trim().replace("s",""))};
+}
+replay.click();
+const start=snap();
+await sleep(850);const early=snap();
+await sleep(850);const middle=snap();
+await sleep(1500);const end=snap();
+const checks={
+ ready:d.documentElement.dataset.introReady==="true",
+ badgeStartsHidden:start.badgeOpacity<.1,
+ badgeStartsRising:middle.badgeOpacity>.1&&middle.badgeOpacity<.99,
+ badgeEndsVisible:end.badgeOpacity>.98,
+ photoStartsHidden:start.photoOpacity<.1,
+ photoEndsVisible:end.photoOpacity>.98,
+ visibleMovement:start.badgeTransform!==end.badgeTransform&&start.photoTransform!==end.photoTransform,
+ headlineChanges:start.headlineOpacity<.1&&end.headlineOpacity>.98,
+ delayedEntrance:Math.abs(start.seconds-1.1)<.05
+};
+const ok=Object.values(checks).every(Boolean);
+status.className=ok?"ok":"bad";status.textContent=ok?"PASS：画面に表示した状態で浮上と写真の移動を実測":"FAIL：動きの途中または終点に未合格の項目";
+report.textContent=JSON.stringify({checks,start,early,middle,end},null,2);
+document.documentElement.dataset.qaComplete="true";window.LUNOA_LIVE_TIMELINE={checks,start,early,middle,end,passed:ok};
+})();
+</script></body></html>
