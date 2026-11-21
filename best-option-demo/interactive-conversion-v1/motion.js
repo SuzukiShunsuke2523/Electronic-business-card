@@ -372,6 +372,36 @@
   }
   root.classList.add("motion-live");
   syncReducedState();
+  // Opening animation: reference-video-inspired sequence of text, circle
+  // badges and imagery. No dependency; all content remains present in HTML.
+  // A reduced-motion preference prevents autoplay, while an explicit tap on
+  // the replay control can run this finite sequence by user choice.
+  const replayIntro=document.getElementById("intro-replay");
+  let introTimer=null;
+  function playIntro(byUser){
+    if(introTimer!==null){clearTimeout(introTimer);introTimer=null;}
+    if(byUser){
+      body.classList.add("intro-user-play");
+      document.getElementById("top")?.scrollIntoView({behavior:"instant",block:"start"});
+    }else{
+      body.classList.remove("intro-user-play");
+    }
+    body.classList.remove("intro-playing");
+    void body.offsetHeight; // reset completed CSS animations for replay
+    body.classList.add("intro-playing");
+    root.dataset.introMode=byUser?"manual":"auto";
+    root.dataset.introFinished="false";
+    introTimer=setTimeout(()=>{root.dataset.introFinished="true";},3100);
+  }
+  replayIntro?.addEventListener("click",()=>playIntro(true));
+  root.dataset.introReady="true";
   root.dataset.motionRebuildReady="true";
   queueScroll();
+  // Avoid delaying anchors and respect device accessibility preferences.
+  if(!wantsReduced()&&(!location.hash||location.hash==="#top")){
+    requestAnimationFrame(()=>playIntro(false));
+  }else{
+    root.dataset.introMode="static";
+    root.dataset.introFinished="true";
+  }
 })();

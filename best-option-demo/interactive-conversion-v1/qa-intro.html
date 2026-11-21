@@ -1,0 +1,48 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>LUNOA Opening Motion QA</title>
+<style>body{margin:0;padding:20px;background:#ebf2e8;color:#244a35;font:14px/1.5 system-ui,sans-serif}h1{font-size:22px}.status{background:white;border-radius:8px;padding:13px;font-weight:700}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:12px;margin-top:20px}.card{background:#fff;padding:13px;border:1px solid #d0dfd2;border-radius:8px}.ok{color:#167d4e}.bad{color:#ad3126}pre{font:11px/1.45 monospace;white-space:pre-wrap;overflow-wrap:anywhere}.frames{position:absolute;left:-14000px;top:0;pointer-events:none}</style></head><body><h1>JavaScript版：オープニング登場演出のQA</h1><p>320 / 390 / 768 / 1280pxで見出し・3つの丸いラベル・写真が時間差で登場するCSS設定と、再生ボタンを検証。「動きを減らす」モードの自動再生停止と手動再生も確認。</p><div class="status" id="status">検証中…</div><div class="grid" id="results"></div><div class="frames" id="frames"></div>
+<script>
+(async()=>{
+const sleep=ms=>new Promise(r=>setTimeout(r,ms)),outcomes=[];
+async function check(width,forceReduced){
+ const f=document.createElement("iframe");f.width=width;f.height=800;f.style.width=width+"px";f.style.height="800px";f.title=width+"px "+(forceReduced?"reduced":"normal");
+ const loaded=new Promise((yes,no)=>{f.onload=yes;f.onerror=()=>no(new Error("frame load failure"))});
+ f.src="./index.html?"+(forceReduced?"qa-reduced=1":"qa-intro=1");document.getElementById("frames").append(f);await loaded;
+ const w=f.contentWindow,d=w.document,$=sel=>d.querySelector(sel),checks={},info={};
+ for(let n=0;n<100&&d.documentElement.dataset.introReady!=="true";n++)await sleep(60);
+ const features=[...d.querySelectorAll(".intro-feature")],trigger=$("#intro-replay"),headline=[...d.querySelectorAll(".hero-clip>span")];
+ checks.ready=d.documentElement.dataset.introReady==="true";
+ checks.featureCount=features.length===3;
+ checks.replayAvailable=!!trigger&&w.getComputedStyle(trigger).display!=="none";
+ checks.widthFit=d.documentElement.scrollWidth<=width+3;
+ checks.noBookingForm=d.querySelectorAll("form").length===0;
+ checks.priceStillStatic=!d.querySelector("#selected-price").getAnimations().length;
+ if(forceReduced){
+  checks.reducedStartsStatic=d.documentElement.dataset.introMode==="static"&&!d.body.classList.contains("intro-playing");
+  trigger.click();await sleep(80);
+  checks.reducedManualStarts=d.documentElement.dataset.introMode==="manual"&&d.body.classList.contains("intro-user-play")&&d.body.classList.contains("intro-playing");
+ }else{
+  checks.autoStarts=d.documentElement.dataset.introMode==="auto"&&d.body.classList.contains("intro-playing");
+ }
+ const names=features.map(e=>w.getComputedStyle(e).animationName),delays=features.map(e=>parseFloat(w.getComputedStyle(e).animationDelay));
+ info.badgeAnimations=names;info.badgeDelays=delays;
+ checks.circlesAnimated=names.every(n=>n.includes("lunoaCircleRise"));
+ checks.circlesStaggered=delays[0]<delays[1]&&delays[1]<delays[2]&&(delays[2]-delays[0])>.25;
+ const photo=$(".motion-hero-photo");info.photoAnimation=w.getComputedStyle(photo).animationName;
+ checks.photoAnimates=info.photoAnimation.includes("lunoaPhotoLift");
+ checks.headlineAnimates=headline.every(e=>w.getComputedStyle(e).animationName.includes("lunoaHeadlineRise"));
+ checks.faqStillPresent=d.querySelectorAll("#faq details").length===4;
+ checks.selectedPlanCards=d.querySelectorAll("[data-plan]").length===3;
+ trigger.click();await sleep(70);
+ checks.replayWorks=d.documentElement.dataset.introMode==="manual"&&d.body.classList.contains("intro-playing");
+ info.scrollWidth=d.documentElement.scrollWidth;
+ const passed=Object.values(checks).every(Boolean);f.remove();return {width,reduced:forceReduced,passed,checks,info};
+}
+for(const width of [320,390,768,1280]){
+ try{outcomes.push(await check(width,false))}catch(e){outcomes.push({width,reduced:false,passed:false,error:String(e)})}
+}
+try{outcomes.push(await check(390,true))}catch(e){outcomes.push({width:390,reduced:true,passed:false,error:String(e)})}
+for(const item of outcomes){const card=document.createElement("section");card.className="card";const h=document.createElement("h2");h.className=item.passed?"ok":"bad";h.textContent=item.width+"px "+(item.reduced?"動き軽減ON":"通常")+" "+(item.passed?"PASS":"FAIL");const pre=document.createElement("pre");pre.textContent=JSON.stringify(item,null,2);card.append(h,pre);document.getElementById("results").append(card)}
+const all=outcomes.every(v=>v.passed),status=document.getElementById("status");status.textContent=all?"PASS — 4幅の段階表示＋軽減設定の手動再生を確認":"FAIL — 下記の項目を確認してください";status.className="status "+(all?"ok":"bad");
+document.documentElement.dataset.qaComplete="true";window.INTRO_QA=outcomes;
+})();
+</script></body></html>
