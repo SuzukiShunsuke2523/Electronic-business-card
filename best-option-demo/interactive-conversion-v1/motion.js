@@ -399,7 +399,7 @@
   queueScroll();
   // Avoid delaying anchors and respect device accessibility preferences.
   if(!wantsReduced()&&(!location.hash||location.hash==="#top")){
-    requestAnimationFrame(()=>playIntro(false));
+    playIntro(false); // Start synchronously; background iOS/iframe rAF may be throttled.
   }else{
     root.dataset.introMode="static";
     root.dataset.introFinished="true";
