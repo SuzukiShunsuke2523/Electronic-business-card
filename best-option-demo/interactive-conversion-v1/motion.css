@@ -530,3 +530,58 @@
     box-shadow:0 12px 25px -8px rgba(20,57,36,.30);
   }
 }
+
+
+/* v9 — mobile video review 2026-11-21:
+   the previous translateZ + perspective + scale made a selected card appear
+   wider and offset from its two siblings. Keep ALL card edges in the same
+   column and convey depth through layered shadow / bevel, not optical skew. */
+.motion-rebuild .motion-plan-grid{
+  perspective:none;
+  padding:22px 0 30px;
+  gap:22px;
+}
+.motion-rebuild .motion-plan-grid .plan-card{
+  transform:translateY(0)!important;
+  transform-style:flat;
+  transform-origin:center center;
+  width:100%;
+  max-width:100%;
+  margin:0;
+  border-radius:8px;
+  transition:
+    transform 1.02s cubic-bezier(.18,.75,.2,1),
+    box-shadow 1.08s cubic-bezier(.18,.75,.2,1),
+    background-color 1.05s cubic-bezier(.18,.75,.2,1),
+    border-color 1.05s cubic-bezier(.18,.75,.2,1)!important;
+}
+.motion-rebuild .motion-plan-grid .plan-card.is-selected{
+  transform:translateY(-4px)!important;
+  box-shadow:
+    0 27px 38px -13px rgba(20,57,36,.30),
+    0 13px 19px -10px rgba(20,57,36,.22),
+    inset 0 -7px 0 rgba(89,133,97,.12);
+}
+.motion-rebuild .motion-plan-grid .plan-card:hover:not(.is-selected){
+  transform:translateY(0)!important;
+}
+@media(max-width:610px){
+  .motion-rebuild .motion-plan-grid{
+    perspective:none;
+    padding:18px 0 24px;
+    gap:20px;
+  }
+  .motion-rebuild .motion-plan-grid .plan-card.is-selected{
+    transform:translateY(-4px)!important;
+    box-shadow:
+      0 24px 34px -12px rgba(20,57,36,.31),
+      0 12px 18px -10px rgba(20,57,36,.22),
+      inset 0 -7px 0 rgba(89,133,97,.12);
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .motion-rebuild .motion-plan-grid .plan-card{transition-duration:.18s!important}
+  .motion-rebuild .motion-plan-grid .plan-card.is-selected{
+    transform:none!important;
+  }
+}
