@@ -1,0 +1,47 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LUNOA｜立体感の強いカード選択 QA</title>
+<style>body{margin:0;padding:18px;background:#e8eee7;color:#244734;font:14px/1.55 system-ui,sans-serif}h1{font-size:21px}#summary{background:#fff;padding:15px;border-radius:9px;font-weight:700}.results{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:13px;margin-top:20px}.card{padding:14px;background:#fff;border:1px solid #cbd9cc;border-radius:9px}.ok{color:#19754d}.bad{color:#b03022}pre{font:11px/1.45 monospace;white-space:pre-wrap;overflow-wrap:anywhere}.offscreen{position:absolute;left:-12000px;top:0;pointer-events:none}</style></head>
+<body><h1>料金カード｜奥行きのある浮上 QA</h1><p>320・390・768・1280pxで、選択したカードの持ち上がり・拡大・影の深さ・金額固定・テキスト削除を公開環境で検証します。FAQは別途、実操作で確認します。</p>
+<div id="summary">検証中…</div><div class="results" id="cards"></div><div class="offscreen" id="frames"></div>
+<script>
+(async()=>{
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));const widths=[320,390,768,1280],results=[];
+async function run(width){
+ const frame=document.createElement("iframe");frame.title=width+"px";frame.width=width;frame.height=840;frame.style.width=width+"px";frame.style.height="840px";
+ const loaded=new Promise((ok,fail)=>{frame.onload=ok;frame.onerror=()=>fail(new Error("iframe load failed"))});frame.src="./index.html?qa-depth=1";document.getElementById("frames").append(frame);await loaded;
+ const d=frame.contentDocument,w=frame.contentWindow,$=sel=>d.querySelector(sel),checks={},stats={};
+ for(let i=0;i<70&&!(d.documentElement.dataset.ready==="true"&&d.documentElement.dataset.motionRebuildReady==="true");i++)await sleep(100);
+ checks.ready=d.documentElement.dataset.ready==="true"&&d.documentElement.dataset.motionRebuildReady==="true";
+ const cards=[...d.querySelectorAll(".motion-plan-grid [data-plan]")],ticket=$('[data-plan="ticket"]'),single=$('[data-plan="single"]'),amount=$("#selected-price");
+ checks.threeCards=cards.length===3;
+ checks.noChoiceWords=cards.every(c=>!c.textContent.includes("選択中")&&!c.textContent.includes("選択する"));
+ checks.ariaPressed=cards.every(c=>c.hasAttribute("aria-pressed"));
+ checks.hasCheckMark=cards.every(c=>!!c.querySelector(".select-circle"));
+ const before=ticket.getBoundingClientRect(),beforeShadow=w.getComputedStyle(ticket).boxShadow;
+ ticket.click();
+ const p0=ticket.getBoundingClientRect(),yen0=amount.textContent.trim();
+ await sleep(430);
+ const pMid=ticket.getBoundingClientRect(),shadowMid=w.getComputedStyle(ticket).boxShadow,yenMid=amount.textContent.trim();
+ await sleep(1150);
+ const pEnd=ticket.getBoundingClientRect(),shadowEnd=w.getComputedStyle(ticket).boxShadow,yenEnd=amount.textContent.trim();
+ const riseMid=before.top-pMid.top,riseEnd=before.top-pEnd.top;
+ const growth=pEnd.width/before.width;
+ stats.elevation={riseMid:Number(riseMid.toFixed(2)),riseEnd:Number(riseEnd.toFixed(2)),growth:Number(growth.toFixed(3)),startShadow:beforeShadow,midShadow:shadowMid,endShadow:shadowEnd};
+ checks.risesClearly=riseEnd>(width<=610?15:17);
+ checks.risesGradually=riseMid>3&&riseEnd>riseMid+2;
+ checks.growsInPerspective=growth>1.025;
+ checks.shadowGetsDeeper=shadowMid!==beforeShadow&&shadowEnd!==shadowMid;
+ checks.pricesStayStatic=[yen0,yenMid,yenEnd].every(x=>x.startsWith("¥26,000"));
+ checks.selectedImmediately=ticket.getAttribute("aria-pressed")==="true";
+ checks.noHorizontalOverflow=d.documentElement.scrollWidth<=width+3;
+ single.click();
+ checks.nextSelectionWorks=amount.textContent.trim().startsWith("¥7,000")&&single.getAttribute("aria-pressed")==="true";
+ checks.faqPresent=d.querySelectorAll(".faq-list details").length===4;
+ const ok=Object.values(checks).every(Boolean);frame.remove();return{width,ok,checks,stats};
+}
+for(const width of widths){try{results.push(await run(width))}catch(error){results.push({width,ok:false,error:String(error)})}}
+for(const r of results){const el=document.createElement("div");el.className="card";const h=document.createElement("h2");h.className=r.ok?"ok":"bad";h.textContent=r.width+"px — "+(r.ok?"PASS":"FAIL");const p=document.createElement("pre");p.textContent=JSON.stringify(r,null,2);el.append(h,p);document.getElementById("cards").append(el)}
+const passed=results.every(r=>r.ok);const status=document.getElementById("summary");status.className=passed?"ok":"bad";status.textContent=passed?"PASS｜選択カードの立体的な浮上・拡大・影を確認":"FAIL｜一部の項目に問題があります";document.documentElement.dataset.qaComplete="true";window.LUNOA_DEPTH_QA=results;
+})();
+</script>
+</body></html>
