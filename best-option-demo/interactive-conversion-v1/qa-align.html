@@ -1,0 +1,47 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>LUNOA｜料金カード位置と固定バー整合性QA</title>
+<style>body{background:#edf2e8;color:#224534;padding:18px;margin:0;font:14px/1.5 system-ui,sans-serif}h1{font-size:21px}#status{background:white;padding:14px;border-radius:9px;font-weight:700}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:15px}.card{background:white;border:1px solid #c4d8c7;border-radius:9px;padding:14px}.ok{color:#137b4a}.bad{color:#ac2e27}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:11px/1.4 monospace}.hidden{position:absolute;left:-12000px;top:0;pointer-events:none}</style></head><body><h1>選択カードと料金表示のズレ修正｜QA</h1><p>320 / 390 / 768 / 1280pxで、3つのカードの左右端が揃い、選択したプランが画面上部・下部・料金欄に反映されるかを実測します。</p><div id="status">検証中…</div><div class="grid" id="results"></div><div class="hidden" id="frames"></div><script>
+(async()=>{
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));const widths=[320,390,768,1280],results=[];
+async function test(width){
+ const frame=document.createElement("iframe");frame.title=width+"px";frame.width=width;frame.height=830;frame.style.width=width+"px";frame.style.height="830px";
+ const loaded=new Promise((ok,no)=>{frame.onload=ok;frame.onerror=()=>no(new Error("iframe load failed"))});frame.src="./index.html?qa-align=1";document.getElementById("frames").append(frame);await loaded;
+ const d=frame.contentDocument,w=frame.contentWindow,$=s=>d.querySelector(s);const checks={},notes={};
+ for(let i=0;i<80&&!(d.documentElement.dataset.ready==="true"&&d.documentElement.dataset.motionRebuildReady==="true");i++)await sleep(100);
+ checks.ready=d.documentElement.dataset.ready==="true"&&d.documentElement.dataset.motionRebuildReady==="true";
+ const cards=[...d.querySelectorAll(".motion-plan-grid .plan-card")],topLink=$(".header-cta"),bottomName=$(".mobile-bar small"),bottomValue=$(".mobile-bar strong"),mainPrice=$("#selected-price");
+ const plans=[["single","¥7,000","パーソナルレッスン"],["ticket","¥26,000","4回チケット"],["trial","¥3,000","体験レッスン"]];
+ const all=[];
+ for(const [id,amount,name] of plans){
+   const button=d.querySelector('[data-plan="'+id+'"]');button.click();await sleep(1200);
+   const rects=cards.map(card=>{const r=card.getBoundingClientRect();return {left:r.left,right:r.right,width:r.width}});
+   const deltaLeft=Math.max(...rects.map(r=>r.left))-Math.min(...rects.map(r=>r.left));
+   const deltaRight=Math.max(...rects.map(r=>r.right))-Math.min(...rects.map(r=>r.right));
+   const equalWidth=Math.max(...rects.map(r=>r.width))-Math.min(...rects.map(r=>r.width));
+   const selection={
+     id,amount,name,
+     main:mainPrice.textContent.trim(),
+     mobileName:bottomName.textContent.trim(),mobileAmount:bottomValue.textContent.trim(),
+     header:topLink.textContent.trim(),headerAria:topLink.getAttribute("aria-label"),
+     deltaLeft:Number(deltaLeft.toFixed(2)),deltaRight:Number(deltaRight.toFixed(2)),equalWidth:Number(equalWidth.toFixed(2)),
+     selected:button.getAttribute("aria-pressed")==="true",noWords:cards.every(x=>!x.textContent.includes("選択中")&&!x.textContent.includes("選択する"))
+   };
+   all.push(selection);
+ }
+ checks.cardsStayAligned=all.every(p=>p.deltaLeft<2.1&&p.deltaRight<2.1&&p.equalWidth<2.1);
+ checks.priceSync=all.every(p=>p.main.startsWith(p.amount)&&p.mobileAmount===p.amount&&p.mobileName===p.name&&p.header.includes(p.amount.replace("¥",""))&&p.headerAria.includes(p.amount));
+ checks.ariaSelection=all.every(p=>p.selected);
+ checks.noChoiceCaptions=all.every(p=>p.noWords);
+ checks.noHorizontalOverflow=d.documentElement.scrollWidth<=width+3;
+ checks.faqCodePresent=d.querySelectorAll(".faq-list details").length===4;
+ const faq=d.querySelector(".faq-list details");faq.querySelector("summary").click();await sleep(1060);checks.faqOpens=faq.open===true;
+ faq.querySelector("summary").click();await sleep(1060);checks.faqCloses=faq.open===false;
+ checks.noSubmission=d.querySelectorAll("form").length===0;
+ notes.plans=all;notes.scrollWidth=d.documentElement.scrollWidth;
+ const passed=Object.values(checks).every(Boolean);frame.remove();return {width,passed,checks,notes};
+}
+for(const width of widths){try{results.push(await test(width))}catch(e){results.push({width,passed:false,error:String(e)})}}
+for(const result of results){let el=document.createElement("section");el.className="card";let h=document.createElement("h2");h.className=result.passed?"ok":"bad";h.textContent=result.width+"px — "+(result.passed?"PASS":"FAIL");let p=document.createElement("pre");p.textContent=JSON.stringify(result,null,2);el.append(h,p);document.getElementById("results").append(el)}
+const passed=results.every(x=>x.passed),stat=document.getElementById("status");stat.className=passed?"ok":"bad";stat.textContent=passed?"PASS｜カード左右端・プラン名・金額表示すべて一致":"FAIL｜下記のチェック項目を確認してください";
+document.documentElement.dataset.qaComplete="true";window.LUNOA_ALIGN_QA=results;
+})();
+</script></body></html>

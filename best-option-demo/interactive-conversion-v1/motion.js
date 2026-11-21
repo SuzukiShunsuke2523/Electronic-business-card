@@ -202,6 +202,30 @@
   // state and exact (non-animated) yen amounts. This layer only visualizes
   // selection with a slow rising bloom. FAQ animation below is unchanged.
   const choices=new Set(["trial","single","ticket"]);
+  // Keep the two sticky price displays synchronized with the actual plan.
+  // The uploaded iPhone recording showed them stuck at 3,000 yen after
+  // selecting the 7,000/26,000 yen plans.
+  const stickyPriceMap={
+    trial:{name:"体験レッスン",amount:"¥3,000",header:"体験 3,000円"},
+    single:{name:"パーソナルレッスン",amount:"¥7,000",header:"単発 7,000円"},
+    ticket:{name:"4回チケット",amount:"¥26,000",header:"4回 26,000円"}
+  };
+  const headerPriceLink=document.querySelector(".header-cta");
+  const stickyName=document.querySelector(".mobile-bar small");
+  const stickyAmount=document.querySelector(".mobile-bar strong");
+  function syncStickyPrice(planId){
+    const next=stickyPriceMap[planId];
+    if(!next)return;
+    if(stickyName)stickyName.textContent=next.name;
+    if(stickyAmount)stickyAmount.textContent=next.amount;
+    if(headerPriceLink){
+      const label=headerPriceLink.firstChild;
+      if(label&&label.nodeType===Node.TEXT_NODE)label.textContent=next.header+" ";
+      else headerPriceLink.insertBefore(document.createTextNode(next.header+" "),headerPriceLink.firstChild);
+      headerPriceLink.setAttribute("aria-label",next.name+" "+next.amount+" の料金を見る");
+    }
+    root.dataset.stickyPlan=planId;
+  }
   const selectionGrid=document.querySelector(".plan-grid");
   const summaryTitle=document.getElementById("selected-title");
   const summaryDescription=document.getElementById("selected-description");
@@ -265,6 +289,7 @@
       if(!choices.has(key)||!pricing)return;
       pricing.dataset.activePlan=key;
       root.dataset.selectedPlan=key;
+      syncStickyPrice(key);
       cancelSelectionMotion();
 
       // The selected card itself now rises in 3D via CSS; no caption text.
@@ -281,6 +306,7 @@
     });
   });
   if(pricing)pricing.dataset.activePlan="trial";
+  syncStickyPrice("trial");
 
   // Native details/summary retain their keyboard semantics. Animate the
   // container's actual height instead of showing the answer instantly.
