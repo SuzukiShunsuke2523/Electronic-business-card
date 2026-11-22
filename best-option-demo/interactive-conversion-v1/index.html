@@ -8,6 +8,14 @@
 <meta name="description" content="集客重視のLUNOA PILATESをベースに、写真が画面全体へ変形するスクロール演出と操作体験を追加したJavaScript試作。未完成・レビュー用。">
 <title>LUNOA PILATES｜JavaScript Motion · 集客版ベース【レビュー用】</title>
 <link rel="preconnect" href="https://images.pexels.com" crossorigin>
+<script>
+/* Arm the opening BEFORE first paint, to prevent a fully visible static hero
+   from flashing on iPhone before the deferred JavaScript finishes loading. */
+if (!location.hash || location.hash==="#top") {
+  document.documentElement.classList.add("intro-prearmed");
+  document.documentElement.dataset.introPrepaint="true";
+}
+</script>
 <link rel="stylesheet" href="../conversion-v1/style.css">
 <link rel="stylesheet" href="motion.css">
 <script defer src="../conversion-v1/app.js"></script>
