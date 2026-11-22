@@ -13,6 +13,7 @@
    from flashing on iPhone before the deferred JavaScript finishes loading. */
 if (!location.hash || location.hash==="#top") {
   document.documentElement.classList.add("intro-prearmed");
+  document.documentElement.dataset.introPrepaint="true";
 }
 </script>
 <link rel="stylesheet" href="../conversion-v1/style.css">
