@@ -374,8 +374,8 @@
   syncReducedState();
   // Opening animation: reference-video-inspired sequence of text, circle
   // badges and imagery. No dependency; all content remains present in HTML.
-  // A reduced-motion preference prevents autoplay, while an explicit tap on
-  // the replay control can run this finite sequence by user choice.
+  // Open the homepage with an entrance automatically. On reduced-motion
+  // devices CSS uses a short staggered fade with minimal movement instead.
   const replayIntro=document.getElementById("intro-replay");
   let introTimer=null;
   function playIntro(byUser){
@@ -389,7 +389,10 @@
     body.classList.remove("intro-playing");
     void body.offsetHeight; // reset completed CSS animations for replay
     body.classList.add("intro-playing");
+    // The pre-paint HTML class animates the first frame even if defer is slow.
+    root.classList.remove("intro-prearmed");
     root.dataset.introMode=byUser?"manual":"auto";
+    root.dataset.introPreference=wantsReduced()?"gentle":"full";
     root.dataset.introFinished="false";
     introTimer=setTimeout(()=>{root.dataset.introFinished="true";},3100);
   }
@@ -397,11 +400,18 @@
   root.dataset.introReady="true";
   root.dataset.motionRebuildReady="true";
   queueScroll();
-  // Avoid delaying anchors and respect device accessibility preferences.
-  if(!wantsReduced()&&(!location.hash||location.hash==="#top")){
-    playIntro(false); // Start synchronously; background iOS/iframe rAF may be throttled.
+  // User requested AUTO entrance even on iPhone with reduced motion enabled.
+  // CSS keeps the reduced variant gentle without hiding the effect entirely.
+  const isHomeOpening=()=>!location.hash||location.hash==="#top";
+  if(isHomeOpening()){
+    playIntro(false); // Synchronous startup; no throttled requestAnimationFrame.
   }else{
+    root.classList.remove("intro-prearmed");
     root.dataset.introMode="static";
     root.dataset.introFinished="true";
   }
+  // Safari can restore an already-open page from bfcache without reloading JS.
+  window.addEventListener("pageshow",event=>{
+    if(event.persisted&&isHomeOpening())playIntro(false);
+  });
 })();
