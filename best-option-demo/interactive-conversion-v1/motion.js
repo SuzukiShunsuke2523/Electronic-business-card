@@ -394,7 +394,9 @@
     root.dataset.introMode=byUser?"manual":"auto";
     root.dataset.introPreference=wantsReduced()?"gentle":"full";
     root.dataset.introFinished="false";
-    introTimer=setTimeout(()=>{root.dataset.introFinished="true";},3100);
+    root.dataset.introSequenceVersion="slow-separate-v12";
+    root.dataset.introDurationMs="11700";
+    introTimer=setTimeout(()=>{root.dataset.introFinished="true";},11700);
   }
   replayIntro?.addEventListener("click",()=>playIntro(true));
   root.dataset.introReady="true";
