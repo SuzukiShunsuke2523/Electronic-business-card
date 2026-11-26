@@ -1,5 +1,5 @@
 <!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>LUNOA Opening Motion QA</title>
-<style>body{margin:0;padding:20px;background:#ebf2e8;color:#244a35;font:14px/1.5 system-ui,sans-serif}h1{font-size:22px}.status{background:white;border-radius:8px;padding:13px;font-weight:700}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:12px;margin-top:20px}.card{background:#fff;padding:13px;border:1px solid #d0dfd2;border-radius:8px}.ok{color:#167d4e}.bad{color:#ad3126}pre{font:11px/1.45 monospace;white-space:pre-wrap;overflow-wrap:anywhere}.frames{position:absolute;left:-14000px;top:0;pointer-events:none}</style></head><body><h1>JavaScript版：オープニング登場演出のQA</h1><p>320 / 390 / 768 / 1280pxで見出し・3つの丸いラベル・写真が時間差で登場するCSS設定と、再生ボタンを検証。「動きを減らす」モードでも自動的に控えめな演出が始まり、手動再生できることも確認。</p><div class="status" id="status">検証中…</div><div class="grid" id="results"></div><div class="frames" id="frames"></div>
+<style>body{margin:0;padding:20px;background:#ebf2e8;color:#244a35;font:14px/1.5 system-ui,sans-serif}h1{font-size:22px}.status{background:white;border-radius:8px;padding:13px;font-weight:700}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:12px;margin-top:20px}.card{background:#fff;padding:13px;border:1px solid #d0dfd2;border-radius:8px}.ok{color:#167d4e}.bad{color:#ad3126}pre{font:11px/1.45 monospace;white-space:pre-wrap;overflow-wrap:anywhere}.frames{position:absolute;left:-14000px;top:0;pointer-events:none}</style></head><body><h1>JavaScript版：オープニング登場演出のQA</h1><p>320 / 390 / 768 / 1280pxで見出し→丸いラベル3つ→写真→ボタンが約11秒かけて別々に登場するCSS設定と、再生ボタンを検証。「動きを減らす」モードでも自動的に控えめな演出が始まり、手動再生できることも確認。</p><div class="status" id="status">検証中…</div><div class="grid" id="results"></div><div class="frames" id="frames"></div>
 <script>
 (async()=>{
 const sleep=ms=>new Promise(r=>setTimeout(r,ms)),outcomes=[];
@@ -27,8 +27,13 @@ async function check(width,forceReduced){
  const names=features.map(e=>w.getComputedStyle(e).animationName),delays=features.map(e=>parseFloat(w.getComputedStyle(e).animationDelay));
  info.badgeAnimations=names;info.badgeDelays=delays;
  checks.circlesAnimated=names.every(n=>n.includes("lunoaCircleRise")||n.includes("lunoaGentleCircle"));
- checks.circlesStaggered=delays[0]<delays[1]&&delays[1]<delays[2]&&(delays[2]-delays[0])>.25;
+ checks.circlesStaggered=delays[0]>=4.25&&delays[1]-delays[0]>=1.1&&delays[2]-delays[1]>=1.1;
+ checks.introLongEnough=d.documentElement.dataset.introDurationMs==="11700"&&d.documentElement.dataset.introSequenceVersion==="slow-separate-v12";
  const photo=$(".motion-hero-photo");info.photoAnimation=w.getComputedStyle(photo).animationName;
+ info.photoDelay=parseFloat(w.getComputedStyle(photo).animationDelay);
+ info.ctaDelay=parseFloat(w.getComputedStyle($(".hero-cta-row")).animationDelay);
+ checks.photoAfterCircles=info.photoDelay>delays[2]+.98;
+ checks.ctaAfterPhoto=info.ctaDelay>info.photoDelay+.98;
  checks.photoAnimates=info.photoAnimation.includes("lunoaPhotoLift")||info.photoAnimation.includes("lunoaGentleArrive");
  checks.headlineAnimates=headline.every(e=>/lunoaHeadlineRise|lunoaGentleArrive/.test(w.getComputedStyle(e).animationName));
  checks.faqStillPresent=d.querySelectorAll("#faq details").length===4;
